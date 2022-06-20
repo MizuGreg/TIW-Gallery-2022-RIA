@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>PF15 - Log in/sign up</title>
+<link rel="stylesheet" type="text/css" media="all" th:href="@{/css/login_page.css}" />
+</head>
+
+<body>
+	<h1>
+		Welcome to the PoliMi image gallery.<br>Sign up or sign in.
+	</h1>
+
+	<h2>Login</h2>
+	<form th:action="@{/LoginCheck}" method="POST">
+		<table>
+			<tr>
+				<td>Username:</td>
+				<td><input type="text" name="username" required></td>
+			</tr>
+			<tr>
+				<td>Password:</td>
+				<td><input type="password" name="password" required></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="submit" value="login"></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<p class="errorLabel" th:text=" ${errorMsgLogin}"></p>
+				</td>
+			</tr>
+		</table>
+	</form>
+
+	<h2>Signup</h2>
+	<form th:action="@{/SignupCheck}" method="POST">
+		<table>
+			<tr>
+				<td>Username:</td>
+				<td><input type="text" name="username" required></td>
+			</tr>
+			<tr>
+				<td>Email:</td>
+				<td><input type="text" name="email" required></td>
+			</tr>
+			<tr>
+				<td>Password:</td>
+				<td><input type="password" name="password" required></td>
+			</tr>
+			<tr>
+				<td>Repeat password:</td>
+				<td><input type="password" name="repeatPassword" required>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="submit" value="signup"></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<p class="errorLabel" th:text=" ${errorMsgSignup}"></p>
+				</td>
+			</tr>
+		</table>
+	</form>
+
+</body>
+</html>

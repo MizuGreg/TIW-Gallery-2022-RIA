@@ -1,0 +1,165 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+version="4.0">
+
+	<display-name>GalleriaImmaginiRIA</display-name>
+	<welcome-file-list>
+    	<welcome-file>login_page.html</welcome-file>
+  	</welcome-file-list>
+  	
+	<!-- If i need context-wide parameters, they go here -->
+	<context-param>
+		<param-name>dbUrl</param-name>
+		<param-value>jdbc:mysql://localhost:3306/image_gallery_database_ria?serverTimezone=UTC</param-value>	
+	</context-param>
+	<context-param>
+		<param-name>dbUser</param-name>
+		<param-value>root</param-value>	
+	</context-param>
+	<context-param>
+		<param-name>dbPasswordGreg</param-name>
+		<param-value>C0ntinu@zione</param-value>	
+	</context-param>
+	<context-param>
+		<param-name>dbPasswordDani</param-name>
+		<param-value>$nnH68bmJ4X4r*EXMR</param-value>	
+	</context-param>
+	<context-param>
+		<param-name>dbDriver</param-name>
+		<param-value>com.mysql.cj.jdbc.Driver</param-value>	
+	</context-param>
+	 
+	<servlet>
+		<servlet-name>SignupCheck</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.SignupCheck</servlet-class>
+		<!-- 
+		<init-param>
+			<param-name> Parameter specific to this servlet </param-name>
+			<param-value> value </param-value>
+		</init-param>
+		 -->
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SignupCheck</servlet-name>
+		<url-pattern>/SignupCheck</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>LoginCheck</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.LoginCheck</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LoginCheck</servlet-name>
+		<url-pattern>/LoginCheck</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>EditAlbum</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.EditAlbum</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EditAlbum</servlet-name>
+		<url-pattern>/EditAlbum</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>CreateAlbum</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.CreateAlbum</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CreateAlbum</servlet-name>
+		<url-pattern>/CreateAlbum</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>CreateComment</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.CreateComment</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CreateComment</servlet-name>
+		<url-pattern>/CreateComment</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>GoToLoginPage</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.GoToLoginPage</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GoToLoginPage</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>	
+		
+	<servlet>
+		<servlet-name>GoToHomePage</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.GoToHomePage</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GoToHomePage</servlet-name>
+		<url-pattern>/Home</url-pattern>
+	</servlet-mapping>	
+
+	<servlet>
+		<servlet-name>GoToAlbumPage</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.GoToAlbumPage</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GoToAlbumPage</servlet-name>
+		<url-pattern>/Album</url-pattern>
+	</servlet-mapping>	
+
+	<servlet>
+		<servlet-name>GoToAlbumEditPage</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.GoToAlbumEditPage</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GoToAlbumEditPage</servlet-name>
+		<url-pattern>/AlbumEdit</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>Logout</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.Logout</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Logout</servlet-name>
+		<url-pattern>/Logout</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>ImageController</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.ImageController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ImageController</servlet-name>
+		<url-pattern>/images/*</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>StylesheetController</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.StylesheetController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>StylesheetController</servlet-name>
+		<url-pattern>/css/*</url-pattern>
+	</servlet-mapping>
+	<!-- Aggiungi gli altri mapping -->
+
+	<!-- We can add filters to pre/post process requests/responses -->
+	<!-- The order infers the order in which they will be called in a chain-->
+	
+	<filter> 
+		<filter-name>LoggedFilter</filter-name> 
+		<filter-class>it.polimi.tiw.filters.LoggedFilter</filter-class> 
+	</filter> 
+	<filter-mapping> 
+		<filter-name>LoggedFilter</filter-name> 
+		<url-pattern>/Home</url-pattern> 
+		<url-pattern>/Album</url-pattern> 
+		<url-pattern>/AlbumEdit</url-pattern> 
+		<url-pattern>/Logout</url-pattern>
+		<url-pattern>/CreateComment</url-pattern>  
+		<url-pattern>/EditAlbum</url-pattern>
+		<url-pattern>/CreateAlbum</url-pattern>
+	</filter-mapping>
+		
+</web-app>
