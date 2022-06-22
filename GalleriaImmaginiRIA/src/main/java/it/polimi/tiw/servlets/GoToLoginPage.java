@@ -1,7 +1,8 @@
 package it.polimi.tiw.servlets;
 
 import java.io.IOException;
-import javax.servlet.ServletContext;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,6 @@ public class GoToLoginPage extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String htmlPath = "/WEB-INF/login_page.html";
-		ServletContext servletContext = getServletContext();
 		
 		//Checking whether the user is already logged in, in that case send them to the home page
 		HttpSession session = request.getSession(false);
@@ -30,8 +30,9 @@ public class GoToLoginPage extends HttpServlet {
             return;
         }
 
-        // TODO: send login_page to user
-		
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher(htmlPath);
+        requestDispatcher.forward(request, response);
+        
     }
 
     @Override

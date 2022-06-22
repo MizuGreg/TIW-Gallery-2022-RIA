@@ -74,9 +74,8 @@ public class LoginCheck extends HttpServlet {
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}
 		} catch (SQLException e) {
-			// TODO consider transforming into an error message
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database checking user credentials");
-			return;
+			errorMessage = "Failure in database checking user credentials";
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 		}
 
         if (errorMessage != null) {
