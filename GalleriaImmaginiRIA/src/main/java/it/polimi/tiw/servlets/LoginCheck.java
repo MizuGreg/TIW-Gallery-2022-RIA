@@ -5,19 +5,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.thymeleaf.TemplateEngine;
-//import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import it.polimi.tiw.dao.UserDAO;
 
@@ -36,7 +32,6 @@ public class LoginCheck extends HttpServlet {
 //		final String PASS = getServletContext().getInitParameter("dbPasswordDani");
 		final String DRIVER_STRING = getServletContext().getInitParameter("dbDriver");
 		
-	
 		try {
 			Class.forName(DRIVER_STRING);
 			connection = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -62,39 +57,45 @@ public class LoginCheck extends HttpServlet {
 
         UserDAO userDAO = new UserDAO(connection);
         String path = getServletContext().getContextPath();
-        
-        //final WebContext webContext = new WebContext(request, response, getServletContext(), request.getLocale());
+        String errorMessage = null;
         
         if(username == null || password == null ||
            username.isEmpty() || password.isEmpty() || 
      	   username.isBlank() || password.isBlank() ){
         
-        	response.sendRedirect(path + "/?errorId=5"); //Send with error status = 5 (null/invalid inputs (login))
-            return;
-		}
+        	errorMessage = "Invalid inputs received"; // btw this should never happen cause the client's javascript shouldn't allow it
+        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
 
         try {
 			if(userDAO.checkCredentials(username, password) == null) {
-				// User is present
-				
-				response.sendRedirect(path + "/?errorId=6"); //Send with error status = 6 (incorrect credentials)
-				return;
+				// User is NOT present
+				errorMessage = "Wrong credentials";
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			// TODO consider transforming into an error message
 			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database checking user credentials");
 			return;
 		}
 
-        
-        // Add session creation here
-		HttpSession session = request.getSession(true);
-		//It should always be new, since the session is just now starting after sign in
-		if(session.isNew()){
-			request.getSession().setAttribute("username", username);
-		}
-
-        response.sendRedirect(path + "/Home");
+        if (errorMessage != null) {
+        	Gson gson = new GsonBuilder().setDateFormat("yyyy/MM/dd").create();
+        	String errorJson = gson.toJson(errorMessage);
+        	response.setContentType("application/json");
+    		response.setCharacterEncoding("UTF-8");
+    		// Write JSON on the response
+    		response.getWriter().write(errorJson);
+        } else {
+	        // Add session creation here
+			HttpSession session = request.getSession(true);
+			//It should always be new, since the session is just now starting after sign in
+			if(session.isNew()){
+				request.getSession().setAttribute("username", username);
+			}
+	
+	        response.sendRedirect(path + "/Home");
+        }
     }
 
     @Override
