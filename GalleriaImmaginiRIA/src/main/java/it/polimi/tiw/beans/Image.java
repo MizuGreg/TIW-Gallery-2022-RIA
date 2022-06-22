@@ -11,6 +11,7 @@ public class Image {
 	private String title;
 	private Timestamp date;
 	private String description;
+	private String uploader_username;
 
 	public int getId() {
 		return id;
@@ -42,6 +43,12 @@ public class Image {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	public String getUploader_username() {
+		return uploader_username;
+	}
+	public void setUploader_username(String uploader_username) {
+		this.uploader_username = uploader_username;
+	}
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -52,12 +59,13 @@ public class Image {
         		this.date.equals(image.date) &&
         		this.id == image.id &&
         		this.title.equals(image.title) &&
-        		this.path.equals(image.path);
+        		this.path.equals(image.path) &&
+        		this.uploader_username.equals(image.uploader_username);
 	}
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, path, title, date, description);
+		return Objects.hash(id, path, title, date, description, uploader_username);
 	}
 	
 }
