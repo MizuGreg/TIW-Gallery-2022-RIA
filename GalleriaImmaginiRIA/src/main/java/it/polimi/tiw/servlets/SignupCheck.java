@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import it.polimi.tiw.dao.UserDAO;
+import it.polimi.tiw.utility.ConnectionUtility;
 
 //@WebServlet("/SignupCheck")
 public class SignupCheck extends HttpServlet {
@@ -29,22 +30,7 @@ public class SignupCheck extends HttpServlet {
 	 */
 	public void init() throws ServletException{
 		
-		final String DB_URL = getServletContext().getInitParameter("dbUrl");
-		final String USER = getServletContext().getInitParameter("dbUser");
-		final String PASS = getServletContext().getInitParameter("dbPasswordGreg");
-//		final String PASS = getServletContext().getInitParameter("dbPasswordDani");
-		final String DRIVER_STRING = getServletContext().getInitParameter("dbDriver");
-	
-		try {
-			Class.forName(DRIVER_STRING);
-			connection = DriverManager.getConnection(DB_URL, USER, PASS);
-		}
-		catch (ClassNotFoundException e){
-			throw new UnavailableException("Can't load db driver");
-		}
-		catch (SQLException e) {
-			throw new UnavailableException("Can't connect to database");
-		}
+		connection = ConnectionUtility.getConnection(getServletContext());
 		
 		// String s1 = getInitParameter("parameter exclusive to the servlet")
 		// String s1 = getServletContext().getInitParameter("parameter of the servlet container")
@@ -136,11 +122,10 @@ public class SignupCheck extends HttpServlet {
 	public void destroy() {
 		//Closes the database connection for this servlet
 		try {
-			if(connection != null){
-				connection.close();
-			}
+			ConnectionUtility.closeConnection(connection);
 		} catch (SQLException e) {
-			
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import it.polimi.tiw.dao.UserDAO;
+import it.polimi.tiw.utility.ConnectionUtility;
 
 //@WebServlet("/LoginCheck")
 public class LoginCheck extends HttpServlet {
@@ -26,22 +27,8 @@ public class LoginCheck extends HttpServlet {
     @Override
     public void init() throws ServletException {
     	
-        final String DB_URL = getServletContext().getInitParameter("dbUrl");
-		final String USER = getServletContext().getInitParameter("dbUser");
-		final String PASS = getServletContext().getInitParameter("dbPasswordGreg");
-//		final String PASS = getServletContext().getInitParameter("dbPasswordDani");
-		final String DRIVER_STRING = getServletContext().getInitParameter("dbDriver");
-		
-		try {
-			Class.forName(DRIVER_STRING);
-			connection = DriverManager.getConnection(DB_URL, USER, PASS);
-		}
-		catch (ClassNotFoundException e){
-			throw new UnavailableException("Can't load db driver");
-		}
-		catch (SQLException e) {
-			throw new UnavailableException("Can't connect to database");
-		}
+        connection = ConnectionUtility.getConnection(getServletContext());
+    	
     }
 
     @Override
@@ -99,12 +86,11 @@ public class LoginCheck extends HttpServlet {
 
     @Override
     public void destroy() {
-        try {
-			if(connection != null){
-				connection.close();
-			}
+    	try {
+			ConnectionUtility.closeConnection(connection);
 		} catch (SQLException e) {
-			
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
     }
 

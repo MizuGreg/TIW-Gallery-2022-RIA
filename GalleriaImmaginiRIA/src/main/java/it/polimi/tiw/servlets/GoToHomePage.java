@@ -21,6 +21,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.dao.AlbumDAO;
+import it.polimi.tiw.utility.ConnectionUtility;
 
 //@WebServlet("/Home")
 public class GoToHomePage extends HttpServlet{
@@ -44,23 +45,8 @@ public class GoToHomePage extends HttpServlet{
 		this.templateEngine.setTemplateResolver(templateResolver);
 		templateResolver.setSuffix(".html");
     	
-        final String DB_URL = getServletContext().getInitParameter("dbUrl");
-		final String USER = getServletContext().getInitParameter("dbUser");
-		final String PASS = getServletContext().getInitParameter("dbPasswordGreg");
-//		final String PASS = getServletContext().getInitParameter("dbPasswordDani");
-		final String DRIVER_STRING = getServletContext().getInitParameter("dbDriver");
+		connection = ConnectionUtility.getConnection(getServletContext());
 		
-	
-		try {
-			Class.forName(DRIVER_STRING);
-			connection = DriverManager.getConnection(DB_URL, USER, PASS);
-		}
-		catch (ClassNotFoundException e){
-			throw new UnavailableException("Can't load db driver");
-		}
-		catch (SQLException e) {
-			throw new UnavailableException("Can't connect to database");
-		}
     }
 
     @Override
@@ -109,11 +95,10 @@ public class GoToHomePage extends HttpServlet{
     @Override
     public void destroy() {
     	try {
-			if(connection != null){
-				connection.close();
-			}
+			ConnectionUtility.closeConnection(connection);
 		} catch (SQLException e) {
-			
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
     }
 }

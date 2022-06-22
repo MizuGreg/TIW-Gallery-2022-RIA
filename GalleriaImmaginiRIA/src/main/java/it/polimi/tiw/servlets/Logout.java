@@ -12,12 +12,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import it.polimi.tiw.utility.ConnectionUtility;
+
 public class Logout extends HttpServlet{
    
-	private Connection connection;
 	private static final long serialVersionUID = 1L;
 	
+	@Override
+	public void init() {}
 	
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Clear the user session and go to the login page
 		HttpSession session = request.getSession(false);
@@ -29,20 +33,14 @@ public class Logout extends HttpServlet{
 		response.sendRedirect(path + "/");
 	}
 	
-	
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
 	
-	
+	@Override
 	public void destroy() {
-		try {
-			if(connection != null){
-				connection.close();
-			}
-		} catch (SQLException e) {
-			
-		}
+		
 	}
 	
 }

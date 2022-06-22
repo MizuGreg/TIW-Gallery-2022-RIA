@@ -20,6 +20,7 @@ import it.polimi.tiw.beans.Image;
 import it.polimi.tiw.dao.AlbumDAO;
 import it.polimi.tiw.dao.ImageDAO;
 import it.polimi.tiw.utility.CheckerUtility;
+import it.polimi.tiw.utility.ConnectionUtility;
 
 //@WebServlet("/EditAlbum")
 public class EditAlbum extends HttpServlet {
@@ -29,21 +30,9 @@ public class EditAlbum extends HttpServlet {
 
 	@Override
 	public void init() throws ServletException {
-		final String DB_URL = getServletContext().getInitParameter("dbUrl");
-		final String USER = getServletContext().getInitParameter("dbUser");
-		final String PASS = getServletContext().getInitParameter("dbPasswordGreg");
-//		final String PASS = getServletContext().getInitParameter("dbPasswordDani");
-		final String DRIVER_STRING = getServletContext().getInitParameter("dbDriver");
-
-		try {
-			Class.forName(DRIVER_STRING);
-			connection = DriverManager.getConnection(DB_URL, USER, PASS);
-
-		} catch (ClassNotFoundException e) {
-			throw new UnavailableException("Can't load db driver");
-		} catch (SQLException e) {
-			throw new UnavailableException("Can't connect to database");
-		}
+		
+		connection = ConnectionUtility.getConnection(getServletContext());
+	
 	}
 
 	@Override
@@ -147,6 +136,11 @@ public class EditAlbum extends HttpServlet {
 
 	@Override
 	public void destroy() {
-
+		try {
+			ConnectionUtility.closeConnection(connection);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

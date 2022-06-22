@@ -20,6 +20,7 @@ import org.thymeleaf.TemplateEngine;
 import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.dao.AlbumDAO;
 import it.polimi.tiw.utility.CheckerUtility;
+import it.polimi.tiw.utility.ConnectionUtility;
 
 /**
  * This action creates a new album with default values for this user 
@@ -33,23 +34,9 @@ public class CreateAlbum extends HttpServlet {
 
 	@Override
 	public void init() throws ServletException {
-		final String DB_URL = getServletContext().getInitParameter("dbUrl");
-		final String USER = getServletContext().getInitParameter("dbUser");
-		final String PASS = getServletContext().getInitParameter("dbPasswordGreg");
-//		final String PASS = getServletContext().getInitParameter("dbPasswordDani");
-		final String DRIVER_STRING = getServletContext().getInitParameter("dbDriver");
 		
+		connection = ConnectionUtility.getConnection(getServletContext());
 	
-		try {
-			Class.forName(DRIVER_STRING);
-			connection = DriverManager.getConnection(DB_URL, USER, PASS);
-		}
-		catch (ClassNotFoundException e){
-			throw new UnavailableException("Can't load db driver");
-		}
-		catch (SQLException e) {
-			throw new UnavailableException("Can't connect to database");
-		}
 	}
 	
 	@Override
@@ -80,7 +67,12 @@ public class CreateAlbum extends HttpServlet {
 	
 	@Override
 	public void destroy() {	
-	
+		try {
+			ConnectionUtility.closeConnection(connection);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
