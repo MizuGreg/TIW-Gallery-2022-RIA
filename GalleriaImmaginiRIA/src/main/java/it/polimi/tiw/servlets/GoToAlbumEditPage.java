@@ -17,11 +17,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
-
 import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.beans.Comment;
 import it.polimi.tiw.beans.Image;
@@ -36,18 +31,9 @@ public class GoToAlbumEditPage extends HttpServlet {
 	
 	private Connection connection;
 	private static final long serialVersionUID = 1L;
-	private TemplateEngine templateEngine;
 	
 	
     public void init() throws ServletException {
-    	
-    	ServletContext servletContext = getServletContext();
-		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
-		
-		templateResolver.setTemplateMode(TemplateMode.HTML);
-		this.templateEngine = new TemplateEngine();
-		this.templateEngine.setTemplateResolver(templateResolver);
-		templateResolver.setSuffix(".html");
     	
 		connection = ConnectionUtility.getConnection(getServletContext());
 		
@@ -55,9 +41,7 @@ public class GoToAlbumEditPage extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String htmlPath = "/WEB-INF/album_edit.html";
-		ServletContext servletContext = getServletContext();
-		final WebContext context = new WebContext(request, response, servletContext, request.getLocale());
-    	
+		ServletContext servletContext = getServletContext();    	
     	
     	//Query string components: album id
     	//If no parameters are found: no album id -> go back to home page
@@ -126,10 +110,7 @@ public class GoToAlbumEditPage extends HttpServlet {
 			else isContainedList.put(image, false);
 		}
 		
-		context.setVariable("imagesMap", isContainedList);
-		context.setVariable("albumTitle", album.getTitle());
-
-		templateEngine.process(htmlPath, context, response.getWriter());		
+		
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

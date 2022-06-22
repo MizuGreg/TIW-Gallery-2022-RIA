@@ -14,11 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
-
 import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.dao.AlbumDAO;
 import it.polimi.tiw.utility.ConnectionUtility;
@@ -28,23 +23,10 @@ public class GoToHomePage extends HttpServlet{
 	
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
-	private TemplateEngine templateEngine;
     
 	@Override
     public void init() throws ServletException {
-    	ServletContext servletContext = getServletContext();
-		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
-		
-		// a template resolver is an object in charge of resolving templates and containing additional information
-		// related to the template, like the template mode, if it can be cached and for how long. a servletcontext
-		// resolver specifically computes the resource from which to resolve the template based on a ServletContext
-		// object.
-		    	
-		templateResolver.setTemplateMode(TemplateMode.HTML);
-		this.templateEngine = new TemplateEngine();
-		this.templateEngine.setTemplateResolver(templateResolver);
-		templateResolver.setSuffix(".html");
-    	
+    
 		connection = ConnectionUtility.getConnection(getServletContext());
 		
     }
@@ -54,7 +36,6 @@ public class GoToHomePage extends HttpServlet{
     	
     	String htmlPath = "/WEB-INF/home_page.html";
 		ServletContext servletContext = getServletContext();
-		final WebContext context = new WebContext(request, response, servletContext, request.getLocale());
     	
     	//Query string components: none
     	
@@ -77,13 +58,6 @@ public class GoToHomePage extends HttpServlet{
     	othersAlbums.removeAll(userAlbums);  
     	
     	//They are already in descending order (see DAO implementation)
-    	
-    	//Put them in two (ordered?) thymeleaf lists 
-    	context.setVariable("userAlbums", userAlbums);
-    	context.setVariable("othersAlbums", othersAlbums);
-    	
-    	//Render the page
-		templateEngine.process(htmlPath, context, response.getWriter());
 
     }
 

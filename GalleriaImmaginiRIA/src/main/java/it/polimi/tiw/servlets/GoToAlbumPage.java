@@ -21,10 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.coyote.http11.filters.IdentityInputFilter;
 import org.apache.tomcat.util.net.TLSClientHelloExtractor;
 import org.eclipse.jdt.internal.compiler.codegen.AnnotationTargetTypeConstants;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.beans.Comment;
@@ -32,7 +28,6 @@ import it.polimi.tiw.beans.Image;
 import it.polimi.tiw.dao.AlbumDAO;
 import it.polimi.tiw.dao.CommentDAO;
 import it.polimi.tiw.dao.ImageDAO;
-import it.polimi.tiw.test.ConnectionTester;
 import it.polimi.tiw.utility.CheckerUtility;
 import it.polimi.tiw.utility.ConnectionUtility;
 
@@ -41,20 +36,11 @@ public class GoToAlbumPage extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
-	private TemplateEngine templateEngine;
 	private final int IMAGES_PER_PAGE = 5;
 
     
     @Override
     public void init() throws ServletException {
-    	
-    	ServletContext servletContext = getServletContext();
-		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
-		
-		templateResolver.setTemplateMode(TemplateMode.HTML);
-		this.templateEngine = new TemplateEngine();
-		this.templateEngine.setTemplateResolver(templateResolver);
-		templateResolver.setSuffix(".html");
     	
 		connection = ConnectionUtility.getConnection(getServletContext());
 		
@@ -65,7 +51,6 @@ public class GoToAlbumPage extends HttpServlet{
     
     	String htmlPath = "/WEB-INF/album_page.html";
 		ServletContext servletContext = getServletContext();
-		final WebContext context = new WebContext(request, response, servletContext, request.getLocale());
     	
     	
     	//Query string components: album id, album page (each containing 5 images), image position
@@ -254,18 +239,7 @@ public class GoToAlbumPage extends HttpServlet{
     		showEditButton = true;
     	}
     	
-    	context.setVariable("thumbnailList", imagesToShow);
-    	context.setVariable("showNext", showNext);
-    	context.setVariable("showPrev", showPrev);
-    	context.setVariable("isImageShown", isImageShown);
-    	context.setVariable("shownImage", shownImage);
-    	if(isImageShown) {
-	    	context.setVariable("comments", comments);
-	    	context.setVariable("imageId", imageId);
-    	}
-    	context.setVariable("showEditButton", showEditButton);
-    	
-		templateEngine.process(htmlPath, context, response.getWriter());
+    
     }
 
     @Override

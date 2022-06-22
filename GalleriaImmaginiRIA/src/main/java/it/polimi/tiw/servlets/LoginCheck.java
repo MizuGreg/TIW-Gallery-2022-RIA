@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import it.polimi.tiw.dao.UserDAO;
+import it.polimi.tiw.utility.CheckerUtility;
 import it.polimi.tiw.utility.ConnectionUtility;
 
 //@WebServlet("/LoginCheck")
@@ -46,9 +47,8 @@ public class LoginCheck extends HttpServlet {
         String path = getServletContext().getContextPath();
         String errorMessage = null;
         
-        if(username == null || password == null ||
-           username.isEmpty() || password.isEmpty() || 
-     	   username.isBlank() || password.isBlank() ){
+        if(!(CheckerUtility.checkAvailability(username) ||
+           	 CheckerUtility.checkAvailability(password))){
         
         	errorMessage = "Invalid inputs received"; // btw this should never happen cause the client's javascript shouldn't allow it
         	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

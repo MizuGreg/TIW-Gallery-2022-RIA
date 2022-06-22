@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.thymeleaf.TemplateEngine;
-
 import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.dao.AlbumDAO;
 import it.polimi.tiw.utility.CheckerUtility;
