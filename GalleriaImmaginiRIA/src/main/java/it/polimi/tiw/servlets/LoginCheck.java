@@ -22,8 +22,8 @@ import it.polimi.tiw.utility.ConnectionUtility;
 //@WebServlet("/LoginCheck")
 public class LoginCheck extends HttpServlet {
 
+	private Connection connection;
 	private static final long serialVersionUID = 1L;
-	Connection connection;
 
     @Override
     public void init() throws ServletException {
@@ -53,18 +53,20 @@ public class LoginCheck extends HttpServlet {
         	errorMessage = "Invalid inputs received"; // btw this should never happen cause the client's javascript shouldn't allow it
         	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-
-        try {
-			if(userDAO.checkCredentials(username, password) == null) {
-				// User is NOT present
-				errorMessage = "Wrong credentials";
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        if(errorMessage == null) {
+	        try {
+				if(userDAO.checkCredentials(username, password) == null) {
+					// User is NOT present
+					errorMessage = "Wrong credentials";
+					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				}
+			} catch (SQLException e) {
+				errorMessage = "Failure in database checking user credentials";
+				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 			}
-		} catch (SQLException e) {
-			errorMessage = "Failure in database checking user credentials";
-			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
-		}
-
+        }
+        
+        //If an error was found, send it as a json message
         if (errorMessage != null) {
         	Gson gson = new GsonBuilder().setDateFormat("yyyy/MM/dd").create();
         	String errorJson = gson.toJson(errorMessage);
@@ -73,6 +75,7 @@ public class LoginCheck extends HttpServlet {
     		// Write JSON on the response
     		response.getWriter().write(errorJson);
         } else {
+        	
 	        // Add session creation here
 			HttpSession session = request.getSession(true);
 			//It should always be new, since the session is just now starting after sign in
