@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import it.polimi.tiw.utility.CheckerUtility;
 
-//@WebServlet("/images/*")
-public class ImageController extends HttpServlet{
+//@WebServlet("/js/*")
+public class JavaScriptController extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
@@ -25,27 +25,25 @@ public class ImageController extends HttpServlet{
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		System.out.println("helloooooooo\n\n\n\njavascript\n\n\n");
 		String readString = request.getPathInfo();
 		
-		if(!CheckerUtility.checkValidImage(readString)) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "the requested image is not valid");
+		if(!CheckerUtility.checkValidJs(readString)) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "the requested JavaScript file is not valid");
 			return;
 		}
 		
 		ServletContext context = getServletContext();
-
 		InputStream inputStream;
-       
-    	inputStream = context.getResourceAsStream("/resources/images" + readString);
+    	inputStream = context.getResourceAsStream("/resources/js" + readString);
 
     	OutputStream outStream = response.getOutputStream();
 
         if (inputStream == null) {
             response.setContentType("text/plain");
-            outStream.write("Failed to send image".getBytes());
+            outStream.write("Failed to send JavaScript".getBytes());
         } else {
-            response.setContentType("image/"+CheckerUtility.getExtension(readString));
+            response.setContentType("text/javascript");
 
             byte[] buffer = new byte[1024];
             int bytesRead;
@@ -66,5 +64,6 @@ public class ImageController extends HttpServlet{
 	public void destroy() {	
 	
 	}
+
 
 }

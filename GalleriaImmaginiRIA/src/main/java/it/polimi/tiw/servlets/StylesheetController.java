@@ -25,7 +25,7 @@ public class StylesheetController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		System.out.println("helloooooooo\n\n\n\nCSS\n\n\n");
 		String readString = request.getPathInfo();
 		
 		if(!CheckerUtility.checkValidCss(readString)) {
@@ -41,7 +41,7 @@ public class StylesheetController extends HttpServlet {
 
         if (inputStream == null) {
             response.setContentType("text/plain");
-            outStream.write("Failed to send style sheet".getBytes());
+            outStream.write("Failed to send style sheet! Sorry.".getBytes());
         } else {
             response.setContentType("text/css");
 

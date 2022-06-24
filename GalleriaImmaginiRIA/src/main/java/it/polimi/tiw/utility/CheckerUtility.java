@@ -24,10 +24,10 @@ public class CheckerUtility {
 			}
 		};
 				
-		return validFormats.contains(getImageExtension(imageString));
+		return validFormats.contains(getExtension(imageString));
 	}
 
-	public static String getImageExtension(String imageString){
+	public static String getExtension(String imageString){
 		List<String> splitString = Arrays.asList(imageString.split("\\."));
 		if(splitString.size() == 0) return "";
 		String extension = splitString.get(splitString.size()-1); //Last token is the extension
@@ -35,7 +35,11 @@ public class CheckerUtility {
 	}
 
 	public static boolean checkValidCss(String cssString) {
-		return getImageExtension(cssString).equals("css");
+		return getExtension(cssString).equals("css");
+	}
+	
+	public static boolean checkValidJs(String jsString) {
+		return getExtension(jsString).equals("js");
 	}
 
 }

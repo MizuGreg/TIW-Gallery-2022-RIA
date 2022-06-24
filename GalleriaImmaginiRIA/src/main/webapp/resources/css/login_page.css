@@ -1,5 +1,5 @@
 @charset "ISO-8859-1";
 
-.errorLabel {
-  color: red;
+body {
+  font-family: Helvetica, sans-serif;
 }

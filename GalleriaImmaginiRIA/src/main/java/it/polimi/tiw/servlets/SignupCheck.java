@@ -91,7 +91,8 @@ public class SignupCheck extends HttpServlet {
 		        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				}
 			} catch (SQLException e) {
-				response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database connection");
+				errorMessage = "Failure in database checking username";
+				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 			}
 		}
 		

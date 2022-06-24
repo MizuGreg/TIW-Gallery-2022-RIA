@@ -6,7 +6,7 @@ version="4.0">
 
 	<display-name>GalleriaImmaginiRIA</display-name>
 	<welcome-file-list>
-    	<welcome-file>login_page.html</welcome-file>
+    	<welcome-file>login_page.jsp</welcome-file>
   	</welcome-file-list>
   	
 	<!-- If i need context-wide parameters, they go here -->
@@ -142,7 +142,14 @@ version="4.0">
 		<servlet-name>StylesheetController</servlet-name>
 		<url-pattern>/css/*</url-pattern>
 	</servlet-mapping>
-	<!-- Aggiungi gli altri mapping -->
+	<servlet>
+		<servlet-name>JavaScriptController</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.JavaScriptController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>JavaScriptController</servlet-name>
+		<url-pattern>/js/*</url-pattern>
+	</servlet-mapping>
 
 	<!-- We can add filters to pre/post process requests/responses -->
 	<!-- The order infers the order in which they will be called in a chain-->
