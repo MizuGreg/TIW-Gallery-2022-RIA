@@ -2,14 +2,8 @@ package it.polimi.tiw.servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,7 +48,6 @@ public class SignupCheck extends HttpServlet {
 		String repeatPassword = request.getParameter("repeatPassword");
 		
 		UserDAO userDAO = new UserDAO(connection);
-		String path = getServletContext().getContextPath();
 		String errorMessage = null;
 		
 		//Check validity of inputs
@@ -112,23 +105,26 @@ public class SignupCheck extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 		}
 		
+		Gson gson = new GsonBuilder().setDateFormat("yyyy/MM/dd").create();
 		//If an error occurred, send it as a json message
 		if(errorMessage != null) {
-			Gson gson = new GsonBuilder().setDateFormat("yyyy/MM/dd").create();
-        	String errorJson = gson.toJson(errorMessage);
+			String errorJson = gson.toJson(errorMessage);
         	response.setContentType("application/json");
     		response.setCharacterEncoding("UTF-8");
-    		// Write JSON on the response
     		response.getWriter().write(errorJson);
 		}
-		else {
+		else { // everything went smoothly
+			response.setStatus(HttpServletResponse.SC_OK);
 			// Add session creation here
 			HttpSession session = request.getSession(true);
 			//It should always be new, since the session is just now starting after sign up
 			if(session.isNew()){
 				request.getSession().setAttribute("username", username);
 			}
-			response.sendRedirect(path + "/Home"); 
+			String usernameJson = gson.toJson(username);
+        	response.setContentType("application/json");
+    		response.setCharacterEncoding("UTF-8");
+    		response.getWriter().write(usernameJson);
 		}
 		// We don't want a refreshing issue, so we redirect
 				

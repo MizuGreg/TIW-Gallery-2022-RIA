@@ -2,11 +2,9 @@ package it.polimi.tiw.servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,7 +42,6 @@ public class LoginCheck extends HttpServlet {
         String password = request.getParameter("password");
 
         UserDAO userDAO = new UserDAO(connection);
-        String path = getServletContext().getContextPath();
         String errorMessage = null;
         
         if(!(CheckerUtility.checkAvailability(username) ||
@@ -66,24 +63,25 @@ public class LoginCheck extends HttpServlet {
 			}
         }
         
+        Gson gson = new GsonBuilder().setDateFormat("yyyy/MM/dd").create();
         //If an error was found, send it as a json message
         if (errorMessage != null) {
-        	Gson gson = new GsonBuilder().setDateFormat("yyyy/MM/dd").create();
         	String errorJson = gson.toJson(errorMessage);
         	response.setContentType("application/json");
     		response.setCharacterEncoding("UTF-8");
-    		// Write JSON on the response
     		response.getWriter().write(errorJson);
-        } else {
-        	
+        } else { // everything went smoothly
+        	response.setStatus(HttpServletResponse.SC_OK);
 	        // Add session creation here
 			HttpSession session = request.getSession(true);
 			//It should always be new, since the session is just now starting after sign in
 			if(session.isNew()){
 				request.getSession().setAttribute("username", username);
 			}
-	
-	        response.sendRedirect(path + "/Home");
+			String usernameJson = gson.toJson(username);
+        	response.setContentType("application/json");
+    		response.setCharacterEncoding("UTF-8");
+    		response.getWriter().write(usernameJson);
         }
     }
 

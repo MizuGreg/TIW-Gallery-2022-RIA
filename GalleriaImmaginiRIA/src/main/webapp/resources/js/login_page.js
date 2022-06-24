@@ -12,21 +12,6 @@
 		signupForm.registerClick();
 	})
 	
-	function makeCall(method, url, formElement, callback, reset = false) {
-		console.log("call made");
-		var request = new XMLHttpRequest();
-		request.onreadystatechange = () => callback(request);
-		request.open(method, url);
-		if (formElement == null) request.send();
-		else {
-			console.log("Sending request from form");
-			request.send(new FormData(formElement));
-			if (reset) {
-				formElement.reset();
-			}
-		}
-	}
-	
 	function LoginForm(formHtmlElement) {
 		this.elements = formHtmlElement.elements;
 		
@@ -39,10 +24,16 @@
 					makeCall("POST", loginFormPath, form, 
 					function(request) {
 						if (request.readyState == XMLHttpRequest.DONE) {
-							// if we're here it means there was NO redirect, thus login failed. ajax handles redirects silently
-							alert(request.responseText);
+							const responseJson = JSON.parse(request.responseText);
+							console.log(responseJson);
+							if (request.status == 200) {
+								sessionStorage.setItem("username", responseJson.usernameJson);
+								window.location.href = "gallery.js";
+							} else {
+								alert(responseJson.errorJson);
+							}
 						}
-					})
+					});
 				} else {
 					form.reportValidity();
 				}
@@ -62,8 +53,14 @@
 						makeCall("POST", loginFormPath, form, 
 						function(request) {
 							if (request.readyState == XMLHttpRequest.DONE) {
-								// if we're here it means there was NO redirect, thus login failed. ajax handles redirects silently
-								alert(request.responseText);
+								const responseJson = JSON.parse(request.responseText);
+								console.log(responseJson);
+								if (request.status == 200) {
+									sessionStorage.setItem("username", responseJson.usernameJson);
+									window.location.href = "gallery.js";
+								} else {
+									alert(responseJson.errorJson);
+								}
 							}
 						})
 					} else {
