@@ -27,7 +27,7 @@ public class GoToLoginPage extends HttpServlet {
 		HttpSession session = request.getSession(false);
         
         if(!(session == null || session.isNew() || session.getAttribute("username") == null)){
-        	response.sendRedirect(getServletContext().getContextPath() + "/Home");
+        	response.sendRedirect(getServletContext().getContextPath() + "/Galleria"); 
             return;
         }
 

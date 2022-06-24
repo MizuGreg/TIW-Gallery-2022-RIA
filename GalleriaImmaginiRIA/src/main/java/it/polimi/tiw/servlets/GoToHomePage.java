@@ -18,7 +18,7 @@ import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.dao.AlbumDAO;
 import it.polimi.tiw.utility.ConnectionUtility;
 
-//@WebServlet("/Home")
+//@WebServlet("/Galleria")
 public class GoToHomePage extends HttpServlet{
 	
 	private static final long serialVersionUID = 1L;
@@ -34,7 +34,7 @@ public class GoToHomePage extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
-    	String htmlPath = "/WEB-INF/home_page.html";
+    	String htmlPath = "/WEB-INF/home_page.jsp";
 		ServletContext servletContext = getServletContext();
     	
     	//Query string components: none

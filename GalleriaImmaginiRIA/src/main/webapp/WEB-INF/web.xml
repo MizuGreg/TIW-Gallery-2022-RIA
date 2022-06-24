@@ -97,26 +97,10 @@ version="4.0">
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>GoToHomePage</servlet-name>
-		<url-pattern>/Home</url-pattern>
+		<url-pattern>/Galleria</url-pattern>
 	</servlet-mapping>	
 
-	<servlet>
-		<servlet-name>GoToAlbumPage</servlet-name>
-		<servlet-class>it.polimi.tiw.servlets.GoToAlbumPage</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>GoToAlbumPage</servlet-name>
-		<url-pattern>/Album</url-pattern>
-	</servlet-mapping>	
-
-	<servlet>
-		<servlet-name>GoToAlbumEditPage</servlet-name>
-		<servlet-class>it.polimi.tiw.servlets.GoToAlbumEditPage</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>GoToAlbumEditPage</servlet-name>
-		<url-pattern>/AlbumEdit</url-pattern>
-	</servlet-mapping>
+	
 	
 	<servlet>
 		<servlet-name>Logout</servlet-name>
@@ -160,9 +144,7 @@ version="4.0">
 	</filter> 
 	<filter-mapping> 
 		<filter-name>LoggedFilter</filter-name> 
-		<url-pattern>/Home</url-pattern> 
-		<url-pattern>/Album</url-pattern> 
-		<url-pattern>/AlbumEdit</url-pattern> 
+		<url-pattern>/Galleria</url-pattern>  
 		<url-pattern>/Logout</url-pattern>
 		<url-pattern>/CreateComment</url-pattern>  
 		<url-pattern>/EditAlbum</url-pattern>
