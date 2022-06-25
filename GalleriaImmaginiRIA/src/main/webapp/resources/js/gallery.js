@@ -23,14 +23,14 @@
 				albumsList.registerEvents(this);
 
 				albumView = new AlbumView(
-					// bla bla bla
+					document.getElementById("albumView")
 				);
 				albumView.registerEvents(this);
 
 				imageView = new ImageView(
-					// bla bla bla
+					// cosa mettere qui?
 				);
-				imageView.registerEvents(this); // non credo sia necessario
+				imageView.registerEvents(this); // non credo questa riga sia necessaria
 
 				document.getElementsByClassName("logoutButton").addEventListener("click", () => {
 					window.sessionStorage.removeItem("username"); // client-side logout
@@ -58,6 +58,10 @@
 		constructor(userAlbums, othersAlbums) {
 			this.userAlbums = userAlbums;
 			this.othersAlbums = othersAlbums;
+
+			this.registerEvents = (pageOrchestrator) => {
+				this.orchestrator = pageOrchestrator;
+			}
 
 			this.reset = function () {
 				this.userAlbums.style.visibility = "hidden";
@@ -91,7 +95,7 @@
 				if (AlbumsArray.length == 0) {
 					const row = this.userAlbums.insertRow();
 					const cell = row.insertCell();
-					cell.setAttribute("colspan", "2");
+					cell.setAttribute("colspan", "3");
 					cell.appendChild(document.createTextNode("You have no albums yet! " +
 					"Create an album with the 'Create album' button."));
 				} else {
@@ -101,20 +105,34 @@
 						titleCell.appendChild(document.createTextNode(element.title));
 						titleCell.onclick = () => {
 							albumView.show(element.id);
-						};
+						}
+						const idCell = row.insertCell();
+						idCell.appendChild(document.createTextNode(element.id));
 						const dateCell = row.insertCell();
 						dateCell.appendChild(document.createTextNode(element.date));
 					});
 				};
+				this.makeOrderable();
 				this.userAlbums.style.visibility = "visible";
 			};
 
-			this.makeOrderable = (AlbumsArray) => {
+			this.makeOrderable = () => {
+				var draggingRow;
 				for (var i = 0, row; row = this.userAlbums.rows[i]; i++) {
-					row.cells[0].onclick = () => { //select first cell
-					}; // and disable click on it
+					row.ondragstart = function startDrag() {
+						draggingRow = event.target;
+					};
+					row.ondragover = function dragOver() {
+						e.preventDefault();
+						var t = event.target;
+						const rows = Array.from(t.parentNode.parentNode.children);
+
+						if (rows.indexOf(t.parentNode) > rows.indexOf(draggingRow))
+							t.parentNode.after(draggingRow);
+						else
+							t.parentNode.before(draggingRow);
+					}
 				}
-				// todo: make the row draggable
 			}
 
 			this.updateOthers = function(AlbumsArray) {
@@ -122,7 +140,7 @@
 				if (AlbumsArray.length == 0) {
 					const row = this.othersAlbums.insertRow();
 					const cell = row.insertCell();
-					cell.setAttribute("colspan", "2");
+					cell.setAttribute("colspan", "4");
 					cell.appendChild(document.createTextNode("There are no albums here! "));
 				} else {
 					AlbumsArray.forEach(element => {
@@ -134,17 +152,81 @@
 						titleCell.onclick = () => {
 							albumView.show(element.id);
 						};
+						const idCell = row.insertCell();
+						idCell.appendChild(document.createTextNode(element.id));
 						const dateCell = row.insertCell();
 						dateCell.appendChild(document.createTextNode(element.date));
 					});
 				};
 				this.othersAlbums.style.visibility = "visible";
 			};
+
+			this.autoclick = (id) => {
+				var e = new Event("click");
+				for (var i = 0, row; row = this.userAlbums.rows[i]; i++) {
+					if (row.cells[1].innerHTML === id) {
+						row.dispatchEvent(e);
+						return;
+					}
+				}
+				for (var i = 0, row; row = this.othersAlbums.rows[i]; i++) {
+					if (row.cells[1].innerHTML === id) {
+						row.dispatchEvent(e);
+						return;
+					}
+				}
+				alert("autoclick failed!"); // this should never happen
+			}
 		}
 	}
 	
-	function AlbumView() {
-		// TODO
-	}
-	
+	class AlbumView {
+		constructor(albumView) {
+			this.albumView = albumView;
+			this.imagesList;
+			this.page = 0;
+
+			this.registerEvents = (pageOrchestrator) => {
+				this.orchestrator = pageOrchestrator;
+			}
+
+			this.reset = function () {
+				this.userAlbums.style.visibility = "hidden";
+				this.othersAlbums.style.visibility = "hidden";
+				// or i guess i could also do the following:
+				this.userAlbums.innerHTML = "";
+				this.othersAlbums.innerHTML = "";
+			};
+
+			this.show = function (albumId, next) {
+				var self = this;
+				makeCall("GET", "Album?id=" + albumId, null, function(request) {
+					if (request.readyState == XMLHttpRequest.DONE) {
+						const responseJson = JSON.parse(request.responseText);
+						console.log(responseJson);
+						if (request.status == 200) {
+							// fill the view with json content
+							self.update(responseJson);
+							if (next) next(); // ???
+						} else {
+							alert("There was an error while fetching this album from the server. " +
+							"Please try again later. Error: " + responseJson.errorJson);
+						}
+					}
+				});
+			};
+
+			this.update = function(imagesList) {
+				this.imagesToDisplay = imagesList.slice(this.page*5-1, this.page*5+4);
+				const imageCells = this.albumView.rows[0].cells;
+				const titleCells = this.albumView.rows[1].cells;
+				for (var i = 0; i < 5; i++) {
+					const img = document.createElement('img');
+					img.src = imagesList[i].path;
+					imageCells[i].appendChild(img);
+					titleCells[i].appendChild(document.createTextNode(imagesList[i].title));
+				}
+			}
+		}
+	}	
 })();

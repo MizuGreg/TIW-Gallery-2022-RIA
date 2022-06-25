@@ -8,7 +8,6 @@
 <script type="text/javascript" src="js/utils.js" charset="utf-8" defer></script>
 <script type="text/javascript" src="js/login_page.js" charset="utf-8" defer></script>
 </head>
-<!-- attributi per thymeleaf: userAlbums e othersAlbums che sono List<Album> -->
 <body>
 	<div class="logoutButton">
 		<a href="/Logout">
@@ -24,6 +23,7 @@
 			<thead>
 				<tr>
 					<td>Title</td>
+					<td>ID</td>
 					<td>Date</td>
 				</tr>
 			</thead>
@@ -42,10 +42,33 @@
 				<tr>
 					<td>Creator</td>
 					<td>Title</td>
+					<td>ID</td>
 					<td>Date</td>
 				</tr>
 			</thead>
 			<tbody id="othersAlbums">
+			</tbody>
+		</table>
+	</div>
+	<br><hr><br>
+	<div>
+		<h2>Album view</h3>
+		<table border="1">
+			<tbody>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
 			</tbody>
 		</table>
 	</div>
