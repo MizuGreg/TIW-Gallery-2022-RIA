@@ -4,13 +4,13 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>PF15 - Gallery</title>
-<link rel="stylesheet" type="text/css" media="all" th:href="@{/css/home_page.css}" />
+<link rel="stylesheet" type="text/css" media="all" href="/css/home_page.css" />
 <script type="text/javascript" src="js/utils.js" charset="utf-8" defer></script>
 <script type="text/javascript" src="js/login_page.js" charset="utf-8" defer></script>
 </head>
 <body>
-	<div class="logoutButton">
-		<a href="/Logout">
+	<div id="logoutButton">
+		<a href="#logout"> <!-- hashes are actually useless tho -->
 			<button>Logout</button>
 		</a>
 	</div>
@@ -30,9 +30,12 @@
 			<tbody id="yourAlbums">
 			</tbody>
 		</table>
-		<form action="/CreateAlbum">
-			<input type="submit" value="Create a new album"/>
-		</form>
+		<br>
+		<div id="createAlbumButton">
+			<a href="#createAlbum"> <!-- hashes are actually useless tho -->
+				<button>Create a new album</button>
+			</a>
+		</div>
 	</div>
 	<br>
 	<div>
@@ -52,7 +55,7 @@
 	</div>
 	<br><hr><br>
 	<div>
-		<h2>Album view</h3>
+		<h2>Album view</h2>
 		<table border="1">
 			<tbody>
 				<tr>
@@ -71,6 +74,16 @@
 				</tr>
 			</tbody>
 		</table>
+		<br>
+		<div id="editAlbumButton">
+			<a href="#editAlbum"> <!-- hashes are actually useless tho -->
+				<button>Edit this album</button>
+			</a>
+		</div>
+	</div>
+	<br><hr><br>
+	<div id="editDiv">
+		<h2>Edit album</h2>
 	</div>
 </body>
 </html>

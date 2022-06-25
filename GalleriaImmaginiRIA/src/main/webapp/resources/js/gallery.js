@@ -23,7 +23,9 @@
 				albumsList.registerEvents(this);
 
 				albumView = new AlbumView(
-					document.getElementById("albumView")
+					document.getElementById("albumView"),
+					document.getElementById("precButton"),
+					document.getElementById("succButton")
 				);
 				albumView.registerEvents(this);
 
@@ -32,7 +34,7 @@
 				);
 				imageView.registerEvents(this); // non credo questa riga sia necessaria
 
-				document.getElementsByClassName("logoutButton").addEventListener("click", () => {
+				document.getElementById("logoutButton").addEventListener("click", () => {
 					window.sessionStorage.removeItem("username"); // client-side logout
 					window.location.href = "login_page.html";
 				});
@@ -64,9 +66,8 @@
 			}
 
 			this.reset = function () {
-				this.userAlbums.style.visibility = "hidden";
-				this.othersAlbums.style.visibility = "hidden";
-				// or i guess i could also do the following:
+				document.getElementById("yourDiv").style.visibility = "hidden";
+				document.getElementById("othersDiv").style.visibility = "hidden";
 				this.userAlbums.innerHTML = "";
 				this.othersAlbums.innerHTML = "";
 			};
@@ -104,7 +105,7 @@
 						const titleCell = row.insertCell();
 						titleCell.appendChild(document.createTextNode(element.title));
 						titleCell.onclick = () => {
-							albumView.show(element.id);
+							this.orchestrator.refresh(element.id, null);
 						}
 						const idCell = row.insertCell();
 						idCell.appendChild(document.createTextNode(element.id));
@@ -150,7 +151,7 @@
 						const titleCell = row.insertCell();
 						titleCell.appendChild(document.createTextNode(element.title));
 						titleCell.onclick = () => {
-							albumView.show(element.id);
+							this.orchestrator.refresh(element.id, null);
 						};
 						const idCell = row.insertCell();
 						idCell.appendChild(document.createTextNode(element.id));
@@ -176,26 +177,29 @@
 					}
 				}
 				alert("autoclick failed!"); // this should never happen
-			}
+			};
+
+			this.createAlbum = () => {
+				//TODO
+			};
 		}
 	}
 	
 	class AlbumView {
-		constructor(albumView) {
+		constructor(albumView, precButton, succButton) {
 			this.albumView = albumView;
 			this.imagesList;
 			this.page = 0;
+			this.precButton = precButton;
+			this.succButton = succButton;
 
 			this.registerEvents = (pageOrchestrator) => {
 				this.orchestrator = pageOrchestrator;
 			}
 
 			this.reset = function () {
-				this.userAlbums.style.visibility = "hidden";
-				this.othersAlbums.style.visibility = "hidden";
-				// or i guess i could also do the following:
-				this.userAlbums.innerHTML = "";
-				this.othersAlbums.innerHTML = "";
+				document.getElementById("albumDiv").style.visibility = "hidden";
+				this.albumView.innerHTML = "";
 			};
 
 			this.show = function (albumId, next) {
@@ -217,8 +221,8 @@
 			};
 
 			this.update = function(imagesList) {
-				this.imagesToDisplay = imagesList.slice(this.page*5-1, this.page*5+4);
-				const imageCells = this.albumView.rows[0].cells;
+				this.imagesToDisplay = imagesList.slice(this.page*5, this.page*5+5);
+				const imageCells = this.albumView.rows[0].cells.slice(1, 6); // skips prec/succ buttons
 				const titleCells = this.albumView.rows[1].cells;
 				for (var i = 0; i < 5; i++) {
 					const img = document.createElement('img');
@@ -226,7 +230,25 @@
 					imageCells[i].appendChild(img);
 					titleCells[i].appendChild(document.createTextNode(imagesList[i].title));
 				}
+				this.makeModalShowable();
 			}
+
+			this.previousPage = () => {
+				//TODO
+			};
+
+			this.nextPage = () => {
+				//TODO
+			};
+
+			this.makeModalShowable = () => {
+				// set on hover => show modal
+				//TODO
+			};
+
+			this.editAlbum = () => {
+				//TODO
+			};
 		}
 	}	
 })();
