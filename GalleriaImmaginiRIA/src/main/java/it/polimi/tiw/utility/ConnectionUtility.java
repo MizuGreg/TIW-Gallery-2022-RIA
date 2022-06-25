@@ -14,8 +14,8 @@ public class ConnectionUtility {
 		Connection connection = null;
 		String DB_URL = context.getInitParameter("dbUrl");
 		String USER = context.getInitParameter("dbUser");
-//		String PASS = context.getInitParameter("dbPasswordGreg");
-		String PASS = context.getInitParameter("dbPasswordDani");
+		String PASS = context.getInitParameter("dbPasswordGreg");
+//		String PASS = context.getInitParameter("dbPasswordDani");
 		String DRIVER_STRING = context.getInitParameter("dbDriver");
 		
 		try {
