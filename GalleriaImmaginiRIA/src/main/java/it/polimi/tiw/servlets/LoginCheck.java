@@ -76,9 +76,12 @@ public class LoginCheck extends HttpServlet {
 	        // Add session creation here
 			HttpSession session = request.getSession(true);
 			//It should always be new, since the session is just now starting after sign in
-			if(session.isNew()){
-				request.getSession().setAttribute("username", username);
-			}
+			if(!session.isNew()) session.invalidate();
+			
+			//Now it should be new
+			session = request.getSession(true);
+			request.getSession().setAttribute("username", username);
+			
 			
 			valuesToSend.put("username", username);
 

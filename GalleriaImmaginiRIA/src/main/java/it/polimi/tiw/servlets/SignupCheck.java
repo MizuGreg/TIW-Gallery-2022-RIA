@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import it.polimi.tiw.utility.CheckerUtility;
 import it.polimi.tiw.utility.ConnectionUtility;
 
 //@WebServlet("/SignupCheck")
+@MultipartConfig
 public class SignupCheck extends HttpServlet {
 
 
@@ -120,9 +122,11 @@ public class SignupCheck extends HttpServlet {
 			// Add session creation here
 			HttpSession session = request.getSession(true);
 			//It should always be new, since the session is just now starting after sign up
-			if(session.isNew()){
-				request.getSession().setAttribute("username", username);
-			}
+			if(!session.isNew()) session.invalidate();
+			
+			session = request.getSession(true);
+			session.setAttribute("username", username);
+					
 			
 			valuesToSend.put("username", username);
 		}

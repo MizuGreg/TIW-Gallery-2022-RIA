@@ -175,8 +175,8 @@ public class AlbumDAO {
 	public Album getLatestAlbumOfUser(String username) throws SQLException {
 		String query = "SELECT id, title, date, creator_username, ordering "
 				+ 		"FROM album "
-				+ 		"WHERE creator_username = ?"
-				+ 		"ORDER BY date DESC"
+				+ 		"WHERE creator_username = ? "
+				+ 		"ORDER BY date DESC "
 				+ 		"LIMIT 1";
 		
 		ResultSet resultSet = null; 

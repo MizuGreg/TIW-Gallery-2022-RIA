@@ -6,7 +6,7 @@
 <title>PF15 - Gallery</title>
 <link rel="stylesheet" type="text/css" media="all" href="/css/home_page.css" />
 <script type="text/javascript" src="js/utils.js" charset="utf-8" defer></script>
-<script type="text/javascript" src="js/login_page.js" charset="utf-8" defer></script>
+<script type="text/javascript" src="js/gallery.js" charset="utf-8" defer></script>
 </head>
 <body>
 	<div id="logoutButton">
