@@ -4,7 +4,7 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>PF15 - Gallery</title>
-<link rel="stylesheet" type="text/css" media="all" href="/css/home_page.css" />
+<link rel="stylesheet" type="text/css" media="all" href="css/gallery.css" />
 <script type="text/javascript" src="js/utils.js" charset="utf-8" defer></script>
 <script type="text/javascript" src="js/gallery.js" charset="utf-8" defer></script>
 </head>
@@ -17,7 +17,7 @@
 
 	<h1>Image Gallery</h1>
 
-	<div id="yourDiv">
+	<div id="userDiv">
 		<h2>Your albums</h2>
 		<table border="1">
 			<thead>
@@ -27,7 +27,7 @@
 					<td>Date</td>
 				</tr>
 			</thead>
-			<tbody id="yourAlbums">
+			<tbody id="userAlbums">
 			</tbody>
 		</table>
 		<br>
@@ -59,25 +59,45 @@
 		</table>
 	</div>
 	<br><hr><br>
-	<div>
+	<div id="albumDiv">
 		<h2>Album view</h2>
-		<table border="1">
-			<tbody id="albumView">
+		<table>
+			<tbody>
 				<tr>
-					<td id="precButtonCell" rowspan="2" ></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td id="succButtonCell" rowspan="2"></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
+					<td>
+						<div id="precButton">
+							<a href="#prec"> <!-- hashes are actually useless tho -->
+								<button>Precedente</button>
+							</a>
+						</div>
+					</td>
+					<td>
+						<table border="1">
+							<tbody id="albumView">
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+					<td>
+						<div id="succButton">
+							<a href="#succ"> <!-- hashes are actually useless tho -->
+								<button>Successivo</button>
+							</a>
+						</div>
+					</td>
 				</tr>
 			</tbody>
 		</table>
