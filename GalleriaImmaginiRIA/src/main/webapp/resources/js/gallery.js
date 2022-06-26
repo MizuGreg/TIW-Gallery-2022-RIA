@@ -1,26 +1,24 @@
 (function() {
 	var pageOrchestrator = new PageOrchestrator();
-	var albumsList, albumView, imageView;
-	
-	
+	var albumsList, albumView, imageView, albumEditView;
 	
 	window.addEventListener("load", () => {
 		if (sessionStorage.getItem("username") == null) {
 			window.location.href = "login_page.jsp"; // client-side LoggedFilter
 		} else {
 			pageOrchestrator.start();
-			pageOrchestrator.refresh(null, null);
+			pageOrchestrator.refresh(null, null, null);
 		}
 	})
 	
 	class PageOrchestrator {
 		constructor() {
-			this.currentAlbumId = null;
-
 			this.start = function () {
 				albumsList = new AlbumsList(
 					document.getElementById("userAlbums"),
-					document.getElementById("othersAlbums")
+					document.getElementById("othersAlbums"),
+					document.getElementById("createAlbumButton"),
+					document.getElementById("customOrderButton")
 				);
 				albumsList.registerEvents(this);
 
@@ -34,7 +32,12 @@
 				imageView = new ImageView(
 					document.getElementById("imageView")
 				);
-				imageView.registerEvents(this); // non credo questa riga sia necessaria
+				imageView.registerEvents(this);
+
+				albumEditView = new AlbumEditView(
+					document.getElementById("albumEditView")
+				);
+				albumEditView.registerEvents(this);
 
 				document.getElementById("logoutButton").addEventListener("click", () => {
 					window.sessionStorage.removeItem("username"); // client-side logout
@@ -42,11 +45,19 @@
 				});
 			};
 
-			this.refresh = (newAlbumId, newImageId) => {
+			this.refresh = (newAlbumId, newImageId, albumEditId) => {
 				albumsList.reset();
-				albumView.reset();
-				imageView.reset();
 				albumsList.show();
+
+				if (newAlbumId != -1) {
+					albumView.reset();
+				}
+				if (newImageId != -1) {
+					imageView.reset();
+				}
+				if (albumEditId != -1) {
+					albumEditView.reset();
+				}
 
 				if (newAlbumId != null) {
 					albumsList.autoclick(newAlbumId);
@@ -54,17 +65,28 @@
 				if (newImageId != null) {
 					imageView.show(newImageId); // should be converted to automouseover
 				}
+				if (albumEditId != null) {
+					albumEditView.show(albumEditId);
+				}
 			};
 		}
 	}
 	
 	class AlbumsList {
-		constructor(userAlbums, othersAlbums) {
+		constructor(userAlbums, othersAlbums, createAlbumButton, customOrderButton) {
 			this.userAlbums = userAlbums;
 			this.othersAlbums = othersAlbums;
+			this.createAlbumButton = createAlbumButton;
+			this.customOrderButton = customOrderButton;
 
 			this.registerEvents = (pageOrchestrator) => {
 				this.orchestrator = pageOrchestrator;
+				this.createAlbumButton.onclick = () => {
+					this.createAlbum();
+				};
+				this.customOrderButton.onclick = () => {
+					this.pushNewOrder();
+				};
 			}
 
 			this.reset = function () {
@@ -74,7 +96,7 @@
 
 			this.show = function (next) {
 				var self = this; // ugh
-				makeCall("GET", "Galleria", null, function(request) {
+				makeCall("GET", "GetAlbums", null, function(request) {
 					if (request.readyState == XMLHttpRequest.DONE) {
 						const responseJson = JSON.parse(request.responseText);
 						console.log(responseJson);
@@ -105,7 +127,7 @@
 						const titleCell = row.insertCell();
 						titleCell.appendChild(document.createTextNode(element.title));
 						titleCell.onclick = () => {
-							this.orchestrator.refresh(element.id, null);
+							this.orchestrator.refresh(element.id, null, -1);
 						}
 						const idCell = row.insertCell();
 						idCell.appendChild(document.createTextNode(element.id));
@@ -151,7 +173,7 @@
 						const titleCell = row.insertCell();
 						titleCell.appendChild(document.createTextNode(element.title));
 						titleCell.onclick = () => {
-							this.orchestrator.refresh(element.id, null);
+							this.orchestrator.refresh(element.id, null, -1);
 						};
 						const idCell = row.insertCell();
 						idCell.appendChild(document.createTextNode(element.id));
@@ -180,7 +202,13 @@
 			};
 
 			this.createAlbum = () => {
-				//TODO
+				//todo: fetch new album id
+				var newlyCreatedId;
+				this.orchestrator.refresh(-1, null, newlyCreatedId);
+			};
+
+			this.pushNewOrder = () => {
+				//todo: get all IDs into an array and send it to server
 			};
 		}
 	}
@@ -201,7 +229,7 @@
 				this.succButton.onclick = () => {
 					this.nextPage();
 				};
-				const imageCells = this.albumView.rows[0].cells.slice(1, 6); // skips prec/succ buttons
+				//todo: album edit button
 			}
 
 			this.reset = function () {
@@ -213,14 +241,14 @@
 				makeCall("GET", "Album?id=" + albumId, null, function(request) {
 					if (request.readyState == XMLHttpRequest.DONE) {
 						const responseJson = JSON.parse(request.responseText);
-						console.log(responseJson); // forse è responseJson.imagesList ?
+						console.log(responseJson.imagesList); // sì c: grazie <3 
 						if (request.status == 200) {
 							// fill the view with json content
-							self.update(responseJson);
+							self.update(responseJson.imagesList);
 							if (next) next(); // ??? delete this BS
 						} else {
 							alert("There was an error while fetching this album from the server. " +
-							"Please try again later. Error: " + responseJson.errorJson);
+							"Please try again later. Error: " + responseJson.errorMessage);
 						}
 					}
 				});
@@ -237,7 +265,7 @@
 					imageCells[i].appendChild(img);
 					titleCells[i].appendChild(document.createTextNode(imagesToDisplay[i].title));
 				}
-				if (imagesToDisplay.length < 5) {
+				if (imagesToDisplay.length < 5 || imagesList.length/5 == this.page-1) {
 					this.succButton.style.visibility = "hidden";
 				} else {
 					this.succButton.style.visibility = "visible";
@@ -247,7 +275,7 @@
 				} else {
 					this.precButton.style.visibility = "visible";
 				}
-				this.makeModalShowable();
+				this.makeModalShowable(imagesToDisplay.length);
 			}
 
 			this.previousPage = () => {
@@ -260,17 +288,17 @@
 				this.update();
 			};
 
-			this.makeModalShowable = () => {
+			this.makeModalShowable = (numberOfCells) => {
 				const imageCells = this.albumView.rows[0].cells.slice(1, 6); // skips prec/succ buttons
-				for (var i = 0; i < 5; i++) {
+				for (var i = 0; i < numberOfCells; i++) {
 					image.onmouseover = () => {
-						this.orchestrator.refresh(null, this.imagesList[this.page*5+i].id);
+						this.orchestrator.refresh(-1, this.imagesList[this.page*5+i].id, -1);
 					}
 				}
 			};
 
 			this.editAlbum = () => {
-				//TODO UGHHHHHHHHHHHH
+				//TODO
 			};
 		}
 	}
@@ -278,6 +306,20 @@
 	class ImageView {
 		constructor(imageView) {
 			this.imageView = imageView;
+			//TODO
+			this.registerEvents = () => {};
+
+			this.reset = () => {};
+
+			this.show = () => {};
+
+			this.update = () => {};
+		}
+	}
+
+	class AlbumEditView {
+		constructor(albumEditView) {
+			this.albumEditView = albumEditView;
 			//TODO
 			this.registerEvents = () => {};
 

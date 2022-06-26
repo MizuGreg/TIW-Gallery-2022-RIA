@@ -36,6 +36,11 @@
 				<button>Create a new album</button>
 			</a>
 		</div>
+		<div id="customOrderButton">
+			<a href="#customAlbumOrder"> <!-- hashes are actually useless tho -->
+				<button>Save this album order</button>
+			</a>
+		</div>
 	</div>
 	<br>
 	<div id="othersDiv">
@@ -86,6 +91,7 @@
 	<br><hr><br>
 	<div id="editDiv">
 		<h2>Edit album</h2>
+		<!-- TODO id to use: "AlbumEditView" -->
 	</div>
 	<br><hr><br>
 	<div id="modalWindow" class="modal">
