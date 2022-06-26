@@ -244,7 +244,7 @@
 						console.log(responseJson.imagesList); // sì c: grazie <3 
 						if (request.status == 200) {
 							// fill the view with json content
-							self.update(responseJson);
+							self.update(responseJson.imagesList);
 							if (next) next(); // ??? delete this BS
 						} else {
 							alert("There was an error while fetching this album from the server. " +
