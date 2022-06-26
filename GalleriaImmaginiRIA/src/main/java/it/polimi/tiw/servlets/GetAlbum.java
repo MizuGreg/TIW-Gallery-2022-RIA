@@ -53,6 +53,7 @@ public class GetAlbum extends HttpServlet{
     	//if there is no parameter, default to getting the newest one for the currently logged in user
     	if (!CheckerUtility.checkAvailability(readAlbumId)) {
     		errorMessage = "Invalid inputs received";
+    		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     	}
     	else {
     		try {
@@ -60,6 +61,7 @@ public class GetAlbum extends HttpServlet{
     			albumId = Integer.parseInt(readAlbumId);
 			} catch (NumberFormatException e) {
 				errorMessage = "Invalid inputs received";
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}
     	}
     	
@@ -69,10 +71,12 @@ public class GetAlbum extends HttpServlet{
 				//If the result is null, send an error
 				if(imageList == null) {
 					errorMessage = "Couldn't retrieve the images from the album with id " + albumId;
+					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				}
 			}
 	    	catch (SQLException e) {
 				errorMessage = "Failure in retrieving the images from the database";
+				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 			}
     	}
         

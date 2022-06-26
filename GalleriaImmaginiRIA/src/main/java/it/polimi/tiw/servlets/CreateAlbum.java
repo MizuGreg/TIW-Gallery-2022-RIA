@@ -60,6 +60,7 @@ public class CreateAlbum extends HttpServlet {
 		try {
 			albumDAO.createAlbum("newAlbum", username); // This is the only db-altering operation, we don't disable autocommit
 		} catch (SQLException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 			errorMessage = "There was a problem with creating the album";
 		}
 		
@@ -67,7 +68,8 @@ public class CreateAlbum extends HttpServlet {
 			try {
 				//The new album will always be the newest one
 				newlyCreatedAlbum = albumDAO.getLatestAlbumOfUser(username); //There is at least one album, the newest one
-			} catch (Exception e) {
+			} catch (SQLException e) {
+				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 				errorMessage = "There was a problem getting the newly created album, you can find it in the initial page view";
 			}
 		}
@@ -75,7 +77,6 @@ public class CreateAlbum extends HttpServlet {
 		if(errorMessage == null) {
 			newlyCreatedAlbumId = newlyCreatedAlbum.getId();
 		}
-		
 		
 		
 		Gson gson = new GsonBuilder().setDateFormat("yyyy/MM/dd").create();
