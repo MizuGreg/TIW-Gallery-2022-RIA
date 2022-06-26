@@ -28,7 +28,7 @@ public class AlbumDAO {
 	 */
 	public Album getAlbumFromId(int albumId) throws SQLException {
 
-		String query = "SELECT id, title, date, creator_username "
+		String query = "SELECT id, title, date, creator_username, ordering "
 				+ 		"FROM album "
 				+ 		"WHERE id = ?";
 		
@@ -50,6 +50,7 @@ public class AlbumDAO {
 				resultAlbum.setTitle(resultSet.getString("title"));
 				resultAlbum.setDate(resultSet.getTimestamp("date", Calendar.getInstance()));
 				resultAlbum.setCreator_username(resultSet.getString("creator_username"));
+				resultAlbum.setOrdering(resultSet.getInt("ordering"));
 			}
 		}
 		catch (SQLException e) {
@@ -76,13 +77,14 @@ public class AlbumDAO {
 	}
 	
 	/**
-	 * Gets them from newest to oldest
+	 * Gets them by the specified ordering (in ascending order) if present, 
+	 * otherwise from newest to oldest (date in descending order).
 	 */
 	public List<Album> getAlbumsOfUser(String username) throws SQLException{
-		String query = "SELECT id, title, date, creator_username "
+		String query = "SELECT id, title, date, creator_username, ordering "
 				+ 		"FROM album "
 				+ 		"WHERE creator_username = ?"
-				+ 		"ORDER BY date DESC";
+				+ 		"ORDER BY ordering ASC, date DESC";
 		
 		ResultSet resultSet = null; 
 		List<Album> albumList = new ArrayList<Album>();
@@ -98,6 +100,7 @@ public class AlbumDAO {
 				album.setTitle(resultSet.getString("title"));
 				album.setDate(resultSet.getTimestamp("date", Calendar.getInstance()));
 				album.setCreator_username(resultSet.getString("creator_username"));
+				album.setOrdering(resultSet.getInt("ordering"));
 				albumList.add(album);
 			}
 		}
@@ -125,13 +128,14 @@ public class AlbumDAO {
 	}
 
 	/**
-	 * Gets them from newest to oldest
+	 * Gets them by the specified ordering (in ascending order) if present, 
+	 * otherwise from newest to oldest (date in descending order).
 	 */
 	public List<Album> getAllAlbums() throws SQLException{
 		List<Album> albumList = new ArrayList<Album>();
-		String query = "SELECT id, title, date, creator_username "
+		String query = "SELECT id, title, date, creator_username, ordering "
 				+ 		"FROM album A "
-				+ 		"ORDER BY date DESC";
+				+ 		"ORDER BY ordering ASC, date DESC";
 		ResultSet resultSet = null;
 		PreparedStatement preparedStatement = null;
 		
@@ -144,6 +148,7 @@ public class AlbumDAO {
 				album.setTitle(resultSet.getString("title"));
 				album.setDate(resultSet.getTimestamp("date", Calendar.getInstance()));
 				album.setCreator_username(resultSet.getString("creator_username"));
+				album.setOrdering(resultSet.getInt("ordering"));
 				albumList.add(album);
 			}
 		} catch (SQLException e) {
@@ -171,6 +176,7 @@ public class AlbumDAO {
 	/**
 	 * Creates a new album with the given title and username
 	 * The date of creation will be the moment of execution of this function
+	 * It doesn't create an ordering
 	 * @param title the title of the album to create
 	 * @param creator_username the username of the creator
 	 * @return A code signaling the result of the operation

@@ -59,7 +59,7 @@
 									sessionStorage.setItem("username", responseJson.usernameJson);
 									window.location.href = "gallery.js";
 								} else {
-									alert(responseJson.errorJson);
+									alert(responseJson.errorMessage);
 								}
 							}
 						})

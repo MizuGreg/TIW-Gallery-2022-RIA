@@ -42,7 +42,7 @@ public class GetAlbums extends HttpServlet{
 			othersAlbums = albumDAO.getAllAlbums();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in retrieving albums");
+			response.(HttpServletResponse.SC_BAD_GATEWAY, "Failure in retrieving albums");
 		}
     	
     	//Gets other users' albums, excluding this user's

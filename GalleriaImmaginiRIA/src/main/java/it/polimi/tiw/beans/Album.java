@@ -10,6 +10,7 @@ public class Album {
 	private String title;
 	private Timestamp date;
 	private String creator_username;
+	private int ordering;
 	
 	public int getId() {
 		return id;
@@ -35,6 +36,12 @@ public class Album {
 	public void setCreator_username(String creator_username) {
 		this.creator_username = creator_username;
 	}
+	public int getOrdering() {
+		return ordering;
+	}
+	public void setOrdering(int ordering) {
+		this.ordering = ordering;
+	}
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -44,12 +51,13 @@ public class Album {
         return this.creator_username.equals(album.creator_username) &&
         		this.date.equals(album.date) &&
         		this.id == album.id &&
-        		this.title.equals(album.title);
+        		this.title.equals(album.title) &&
+        		this.ordering == album.ordering;
 	}
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(creator_username,date,id,title);
+		return Objects.hash(creator_username,date,id,title, ordering);
 	}
 	
 }
