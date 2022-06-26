@@ -160,6 +160,15 @@ version="4.0">
 		<servlet-name>GetAlbum</servlet-name>
 		<url-pattern>/Album</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>GetImageInfo</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.GetImageInfo</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GetImageInfo</servlet-name>
+		<url-pattern>/Image</url-pattern>
+	</servlet-mapping>
 
 	<!-- We can add filters to pre/post process requests/responses -->
 	<!-- The order infers the order in which they will be called in a chain-->

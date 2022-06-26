@@ -172,6 +172,57 @@ public class AlbumDAO {
 		return albumList;
 	}
 	
+	public Album getLatestAlbumOfUser(String username) throws SQLException {
+		String query = "SELECT id, title, date, creator_username, ordering "
+				+ 		"FROM album "
+				+ 		"WHERE creator_username = ?"
+				+ 		"ORDER BY date DESC"
+				+ 		"LIMIT 1";
+		
+		ResultSet resultSet = null; 
+		Album resultAlbum = null;
+		PreparedStatement preparedStatement = null;
+		
+		try {
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, username);
+			resultSet = preparedStatement.executeQuery();
+			//The result set could be more than 1 row, but we only select 1 with th "LIMIT 1" clause
+			if(!resultSet.next()) {
+				// Album not found
+			}
+			else {
+				resultAlbum = new Album();
+				resultAlbum.setId(resultSet.getInt("id"));
+				resultAlbum.setTitle(resultSet.getString("title"));
+				resultAlbum.setDate(resultSet.getTimestamp("date", Calendar.getInstance()));
+				resultAlbum.setCreator_username(resultSet.getString("creator_username"));
+				resultAlbum.setOrdering(resultSet.getInt("ordering"));
+			}
+		}
+		catch (SQLException e) {
+			throw new SQLException(e);
+		}
+		finally {
+			// The order of closing is, for better safety, result -> statement -> connection
+			try {
+				if (resultSet != null) {
+					resultSet.close();
+				}
+			} catch (Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				if (preparedStatement != null) {
+					preparedStatement.close();
+				}
+			} catch (Exception e2) {
+				throw new SQLException(e2);
+			}
+		}
+		return resultAlbum;
+	}
+	
 	/**
 	 * Creates a new album with the given title and username
 	 * The date of creation will be the moment of execution of this function
