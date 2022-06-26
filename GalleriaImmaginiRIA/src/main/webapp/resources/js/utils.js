@@ -8,6 +8,8 @@ function makeCall(method, url, formElement, callback, reset = false) {
 	if (formElement == null) request.send();
 	else {
 		console.log("Sending request (makeCall)");
+		console.log(formElement);
+		console.log(new FormData(formElement));
 		request.send(new FormData(formElement));
 		if (reset) {
 			formElement.reset();

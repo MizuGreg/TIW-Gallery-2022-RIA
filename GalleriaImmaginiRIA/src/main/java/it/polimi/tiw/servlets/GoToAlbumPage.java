@@ -32,6 +32,7 @@ import it.polimi.tiw.utility.CheckerUtility;
 import it.polimi.tiw.utility.ConnectionUtility;
 
 //@WebServlet("/Album")
+@Deprecated
 public class GoToAlbumPage extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;

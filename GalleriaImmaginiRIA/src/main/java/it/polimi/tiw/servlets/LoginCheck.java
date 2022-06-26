@@ -3,6 +3,7 @@ package it.polimi.tiw.servlets;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -39,7 +40,7 @@ public class LoginCheck extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         String username = request.getParameter("username");
-        String password = request.getParameter("password");
+        String password = request.getParameter("loginPassword");
 
         UserDAO userDAO = new UserDAO(connection);
         String errorMessage = null;
@@ -64,12 +65,12 @@ public class LoginCheck extends HttpServlet {
         }
         
         Gson gson = new GsonBuilder().setDateFormat("yyyy/MM/dd").create();
+        HashMap<String, Object> valuesToSend = new HashMap<String, Object>();
+        String jsonResponse;
+        
         //If an error was found, send it as a json message
         if (errorMessage != null) {
-        	String errorJson = gson.toJson(errorMessage);
-        	response.setContentType("application/json");
-    		response.setCharacterEncoding("UTF-8");
-    		response.getWriter().write(errorJson);
+        	valuesToSend.put("errorMessage", errorMessage);
         } else { // everything went smoothly
         	response.setStatus(HttpServletResponse.SC_OK);
 	        // Add session creation here
@@ -78,11 +79,15 @@ public class LoginCheck extends HttpServlet {
 			if(session.isNew()){
 				request.getSession().setAttribute("username", username);
 			}
-			String usernameJson = gson.toJson(username);
-        	response.setContentType("application/json");
-    		response.setCharacterEncoding("UTF-8");
-    		response.getWriter().write(usernameJson);
+			
+			valuesToSend.put("username", username);
+
         }
+        
+        jsonResponse = gson.toJson(valuesToSend);   	
+    	response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(jsonResponse);
     }
 
     @Override

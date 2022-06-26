@@ -59,8 +59,8 @@
 		</table>
 	</div>
 	<br><hr><br>
-	<div id="albumDiv">
-		<h2>Album view</h3>
+	<div>
+		<h2>Album view</h2>
 		<table border="1">
 			<tbody id="albumView">
 				<tr>
