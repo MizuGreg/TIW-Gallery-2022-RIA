@@ -1,4 +1,5 @@
 (function() {
+
 	console.log("hello");
 	loginFormPath = "LoginCheck";
 	signupFormPath = "SignupCheck";
@@ -19,7 +20,7 @@
 			this.elements["loginButton"].addEventListener("click", (e) => {
 				console.log("clicked on login button");
 				var form = e.target.closest("form"); // looks for the form near where the event is
-				
+
 				if (form.checkValidity()) {
 					makeCall("POST", loginFormPath, form, 
 					function(request) {
@@ -28,7 +29,7 @@
 							console.log(responseJson);
 							if (request.status == 200) {
 								sessionStorage.setItem("username", responseJson.usernameJson);
-								window.location.href = "gallery.js";
+								window.location.href = "gallery.jsp";
 							} else {
 								alert(responseJson.errorMessage);
 							}

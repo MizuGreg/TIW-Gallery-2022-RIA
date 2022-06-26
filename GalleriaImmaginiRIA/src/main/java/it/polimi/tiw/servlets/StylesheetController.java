@@ -25,7 +25,6 @@ public class StylesheetController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("helloooooooo\n\n\n\nCSS\n\n\n");
 		String readString = request.getPathInfo();
 		
 		if(!CheckerUtility.checkValidCss(readString)) {
