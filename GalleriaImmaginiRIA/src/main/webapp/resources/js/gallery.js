@@ -262,8 +262,8 @@
 			});
 		};
 
-		this.update = function(imagesList) {
-			const imagesList = imagesList;
+		this.update = function(imagesListInput) {
+			const imagesList = imagesListInput; // boh qui firefox dice che il parametro formale è dichiarato 2 volte
 			const imagesToDisplay = imagesList.slice(this.page*5, this.page*5+5);
 			const imageCells = this.albumView.rows[0].cells.slice(1, 6); // skips prec/succ buttons
 			const titleCells = this.albumView.rows[1].cells;

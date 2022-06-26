@@ -29,7 +29,7 @@
 							console.log(responseJson);
 							if (request.status == 200) {
 								sessionStorage.setItem("username", responseJson.usernameJson);
-								window.location.href = "gallery.jsp";
+								window.location.href = "Galleria";
 							} else {
 								alert(responseJson.errorMessage);
 							}
