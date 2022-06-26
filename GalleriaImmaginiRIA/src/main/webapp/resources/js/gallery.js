@@ -2,23 +2,25 @@
 	var pageOrchestrator = new PageOrchestrator();
 	var albumsList, albumView, imageView;
 	
+	
+	
 	window.addEventListener("load", () => {
 		if (sessionStorage.getItem("username") == null) {
 			window.location.href = "login_page.jsp"; // client-side LoggedFilter
 		} else {
 			pageOrchestrator.start();
-			pageOrchestrator.refresh();
+			pageOrchestrator.refresh(null, null);
 		}
 	})
 	
 	class PageOrchestrator {
 		constructor() {
+			this.currentAlbumId = null;
+
 			this.start = function () {
 				albumsList = new AlbumsList(
 					document.getElementById("userAlbums"),
 					document.getElementById("othersAlbums")
-					// vari parametri: document.getElementById("yourAlbums") ad es.
-					// in realtà si può passare un wrapper obj1: val1, obj2:val2 ecc.
 				);
 				albumsList.registerEvents(this);
 
@@ -30,7 +32,7 @@
 				albumView.registerEvents(this);
 
 				imageView = new ImageView(
-					// cosa mettere qui?
+					document.getElementById("imageView")
 				);
 				imageView.registerEvents(this); // non credo questa riga sia necessaria
 
@@ -40,17 +42,17 @@
 				});
 			};
 
-			this.refresh = function (currentAlbumId, currentImageId) {
+			this.refresh = (newAlbumId, newImageId) => {
 				albumsList.reset();
 				albumView.reset();
 				imageView.reset();
-				if (currentAlbumId == null) {
-					albumsList.refresh();
-				} else {
-					albumView.refresh();
-					if (currentImageId !== null) {
-						albumView.autoclick(currentImageId);
-					}
+				albumsList.show();
+
+				if (newAlbumId != null) {
+					albumsList.autoclick(newAlbumId);
+				}
+				if (newImageId != null) {
+					imageView.show(newImageId); // should be converted to automouseover
 				}
 			};
 		}
@@ -68,8 +70,6 @@
 			this.reset = function () {
 				document.getElementById("yourDiv").style.visibility = "hidden";
 				document.getElementById("othersDiv").style.visibility = "hidden";
-				this.userAlbums.innerHTML = "";
-				this.othersAlbums.innerHTML = "";
 			};
 
 			this.show = function (next) {
@@ -166,13 +166,13 @@
 				var e = new Event("click");
 				for (var i = 0, row; row = this.userAlbums.rows[i]; i++) {
 					if (row.cells[1].innerHTML === id) {
-						row.dispatchEvent(e);
+						row.cells[0].dispatchEvent(e);
 						return;
 					}
 				}
 				for (var i = 0, row; row = this.othersAlbums.rows[i]; i++) {
-					if (row.cells[1].innerHTML === id) {
-						row.dispatchEvent(e);
+					if (row.cells[2].innerHTML === id) {
+						row.cells[1].dispatchEvent(e);
 						return;
 					}
 				}
@@ -195,11 +195,17 @@
 
 			this.registerEvents = (pageOrchestrator) => {
 				this.orchestrator = pageOrchestrator;
+				this.precButton.onclick = () => {
+					this.previousPage();
+				};
+				this.succButton.onclick = () => {
+					this.nextPage();
+				};
+				const imageCells = this.albumView.rows[0].cells.slice(1, 6); // skips prec/succ buttons
 			}
 
 			this.reset = function () {
 				document.getElementById("albumDiv").style.visibility = "hidden";
-				this.albumView.innerHTML = "";
 			};
 
 			this.show = function (albumId, next) {
@@ -211,7 +217,7 @@
 						if (request.status == 200) {
 							// fill the view with json content
 							self.update(responseJson);
-							if (next) next(); // ???
+							if (next) next(); // ??? delete this BS
 						} else {
 							alert("There was an error while fetching this album from the server. " +
 							"Please try again later. Error: " + responseJson.errorJson);
@@ -221,34 +227,65 @@
 			};
 
 			this.update = function(imagesList) {
-				this.imagesToDisplay = imagesList.slice(this.page*5, this.page*5+5);
+				const imagesList = imagesList;
+				const imagesToDisplay = imagesList.slice(this.page*5, this.page*5+5);
 				const imageCells = this.albumView.rows[0].cells.slice(1, 6); // skips prec/succ buttons
 				const titleCells = this.albumView.rows[1].cells;
-				for (var i = 0; i < 5; i++) {
+				for (var i = 0; i < imagesToDisplay.length; i++) {
 					const img = document.createElement('img');
-					img.src = imagesList[i].path;
+					img.src = imagesToDisplay[i].path;
 					imageCells[i].appendChild(img);
-					titleCells[i].appendChild(document.createTextNode(imagesList[i].title));
+					titleCells[i].appendChild(document.createTextNode(imagesToDisplay[i].title));
+				}
+				if (imagesToDisplay.length < 5) {
+					this.succButton.style.visibility = "hidden";
+				} else {
+					this.succButton.style.visibility = "visible";
+				}
+				if (this.page == 0) {
+					this.precButton.style.visibility = "hidden";
+				} else {
+					this.precButton.style.visibility = "visible";
 				}
 				this.makeModalShowable();
 			}
 
 			this.previousPage = () => {
-				//TODO
+				this.page--;
+				this.update();
 			};
 
 			this.nextPage = () => {
-				//TODO
+				this.page++;
+				this.update();
 			};
 
 			this.makeModalShowable = () => {
-				// set on hover => show modal
-				//TODO
+				const imageCells = this.albumView.rows[0].cells.slice(1, 6); // skips prec/succ buttons
+				for (var i = 0; i < 5; i++) {
+					image.onmouseover = () => {
+						this.orchestrator.refresh(null, this.imagesList[this.page*5+i].id);
+					}
+				}
 			};
 
 			this.editAlbum = () => {
-				//TODO
+				//TODO UGHHHHHHHHHHHH
 			};
 		}
-	}	
+	}
+	
+	class ImageView {
+		constructor(imageView) {
+			this.imageView = imageView;
+			//TODO
+			this.registerEvents = () => {};
+
+			this.reset = () => {};
+
+			this.show = () => {};
+
+			this.update = () => {};
+		}
+	}
 })();

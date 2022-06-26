@@ -17,7 +17,7 @@
 
 	<h1>Image Gallery</h1>
 
-	<div>
+	<div id="yourDiv">
 		<h2>Your albums</h2>
 		<table border="1">
 			<thead>
@@ -38,7 +38,7 @@
 		</div>
 	</div>
 	<br>
-	<div>
+	<div id="othersDiv">
 		<h2>Other users' albums</h2>
 		<table border="1">
 			<thead>
@@ -54,16 +54,18 @@
 		</table>
 	</div>
 	<br><hr><br>
-	<div>
-		<h2>Album view</h2>
+	<div id="albumDiv">
+		<h2>Album view</h3>
 		<table border="1">
-			<tbody>
+			<tbody id="albumView">
 				<tr>
+					<td id="precButtonCell" rowspan="2" ></td>
 					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
+					<td id="succButtonCell" rowspan="2"></td>
 				</tr>
 				<tr>
 					<td></td>
@@ -84,6 +86,16 @@
 	<br><hr><br>
 	<div id="editDiv">
 		<h2>Edit album</h2>
+	</div>
+	<br><hr><br>
+	<div id="modalWindow" class="modal">
+		<div class="modal-content">
+			<span id="closeButton">&times;</span>
+			<div id="imageView">
+				<p>Some text in the modal window.</p> <!-- TODO -->
+			</div>
+			
+		</div>
 	</div>
 </body>
 </html>
