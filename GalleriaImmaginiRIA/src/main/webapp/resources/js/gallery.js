@@ -44,27 +44,27 @@
 
 		this.refresh = (newAlbumId, newImageId, albumEditId) => {
 			albumsList.reset();
+			albumView.reset();
 			albumsList.show();
 
 			if (newAlbumId != -1) {
 				albumView.reset();
+				if (newAlbumId != null) {
+					albumView.show(newAlbumId);
+				}
 			}
 			if (newImageId != -1) {
 				imageView.reset();
+				if (newImageId != null) {
+					imageView.show(newImageId);
+				}
 			}
 			if (albumEditId != -1) {
 				albumEditView.reset();
-			}
-
-			if (newAlbumId != null) {
-				albumsList.autoclick(newAlbumId);
-			}
-			if (newImageId != null) {
-				imageView.show(newImageId); // should be converted to automouseover
-			}
-			if (albumEditId != null) {
-				albumEditView.show(albumEditId);
-			}
+				if (albumEditId != null) {
+					albumEditView.show(albumEditId);
+				}
+			}			
 		};
 	}
 	
@@ -85,11 +85,13 @@
 		}
 
 		this.reset = function () {
-			document.getElementById("yourDiv").style.visibility = "hidden";
+			document.getElementById("userDiv").style.visibility = "hidden";
 			document.getElementById("othersDiv").style.visibility = "hidden";
 		};
 
 		this.show = function (next) {
+			document.getElementById("userDiv").style.visibility = "visible";
+			document.getElementById("othersDiv").style.visibility = "visible";
 			var self = this; // ugh
 			makeCall("GET", "GetAlbums", null, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
@@ -122,7 +124,7 @@
 					const titleCell = row.insertCell();
 					titleCell.appendChild(document.createTextNode(element.title));
 					titleCell.onclick = () => {
-						this.orchestrator.refresh(element.id, null, -1);
+						this.orchestrator.refresh(element.id, null, null);
 					}
 					const idCell = row.insertCell();
 					idCell.appendChild(document.createTextNode(element.id));
@@ -131,7 +133,6 @@
 				});
 			};
 			this.makeOrderable();
-			this.userAlbums.style.visibility = "visible";
 		};
 
 		this.makeOrderable = () => {
@@ -168,7 +169,7 @@
 					const titleCell = row.insertCell();
 					titleCell.appendChild(document.createTextNode(element.title));
 					titleCell.onclick = () => {
-						this.orchestrator.refresh(element.id, null, -1);
+						this.orchestrator.refresh(element.id, null, null);
 					};
 					const idCell = row.insertCell();
 					idCell.appendChild(document.createTextNode(element.id));
@@ -176,19 +177,18 @@
 					dateCell.appendChild(document.createTextNode(element.date));
 				});
 			};
-			this.othersAlbums.style.visibility = "visible";
 		};
 
 		this.autoclick = (id) => {
 			var e = new Event("click");
 			for (var i = 0, row; row = this.userAlbums.rows[i]; i++) {
-				if (row.cells[1].innerHTML === id) {
+				if (row.cells[1].innerHTML == id) {
 					row.cells[0].dispatchEvent(e);
 					return;
 				}
 			}
 			for (var i = 0, row; row = this.othersAlbums.rows[i]; i++) {
-				if (row.cells[2].innerHTML === id) {
+				if (row.cells[2].innerHTML == id) {
 					row.cells[1].dispatchEvent(e);
 					return;
 				}
@@ -211,7 +211,7 @@
 					}
 				}
 			});
-			this.orchestrator.refresh(-1, null, this.newlyCreatedAlbumId);
+			this.orchestrator.refresh(null, null, this.newlyCreatedAlbumId);
 		};
 
 		this.pushNewOrder = () => {
@@ -241,7 +241,7 @@
 		}
 
 		this.reset = function () {
-			document.getElementById("albumDiv").style.visibility = "hidden";
+			document.getElementById("albumDiv").style.visibility = "hidden"; // null error
 		};
 
 		this.show = function (albumId, next) {
@@ -260,12 +260,13 @@
 					}
 				}
 			});
+			document.getElementById("albumDiv").style.visibility = "visible";
 		};
 
 		this.update = function(imagesListInput) {
 			const imagesList = imagesListInput; // boh qui firefox dice che il parametro formale è dichiarato 2 volte
 			const imagesToDisplay = imagesList.slice(this.page*5, this.page*5+5);
-			const imageCells = this.albumView.rows[0].cells.slice(1, 6); // skips prec/succ buttons
+			const imageCells = this.albumView.rows[0].cells;
 			const titleCells = this.albumView.rows[1].cells;
 			for (var i = 0; i < imagesToDisplay.length; i++) {
 				const img = document.createElement('img');
@@ -297,11 +298,12 @@
 		};
 
 		this.makeModalShowable = (numberOfCells) => {
-			const imageCells = this.albumView.rows[0].cells.slice(1, 6); // skips prec/succ buttons
+			const imageCells = this.albumView.rows[0].cells;
 			for (var i = 0; i < numberOfCells; i++) {
-				image.onmouseover = () => {
-					this.orchestrator.refresh(-1, this.imagesList[this.page*5+i].id, -1);
-				}
+				if (imageCells[i].innerHTML != "") 
+					imageCells[i].onmouseover = () => {
+						this.orchestrator.refresh(-1, this.imagesList[this.page*5+i].id, -1);
+					};
 			}
 		};
 
