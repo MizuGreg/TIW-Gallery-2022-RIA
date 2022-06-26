@@ -51,14 +51,14 @@
 				
 				if (form.checkValidity()) {
 					if (this.elements["signupPassword"].value == this.elements["repeatPassword"].value) {
-						makeCall("POST", loginFormPath, form, 
+						makeCall("POST", signupFormPath, form, 
 						function(request) {
 							if (request.readyState == XMLHttpRequest.DONE) {
 								const responseJson = JSON.parse(request.responseText);
 								console.log(responseJson);
 								if (request.status == 200) {
 									sessionStorage.setItem("username", responseJson.usernameJson);
-									window.location.href = "gallery.js";
+									window.location.href = "Galleria";
 								} else {
 									alert(responseJson.errorMessage);
 								}

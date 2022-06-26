@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -15,6 +16,11 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.eclipse.jdt.core.compiler.InvalidInputException;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import it.polimi.tiw.beans.Image;
 import it.polimi.tiw.dao.AlbumDAO;
@@ -46,56 +52,66 @@ public class CreateComment extends HttpServlet{
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         
 		String username = (String) request.getSession().getAttribute("username"); // Guaranteed to exist thanks to filters
-		String readImagePosition = request.getParameter("imagePosition");
-		String readAlbumId = request.getParameter("albumId");
-		String readPageNumber = request.getParameter("pageNumber");
+		String readImageId = request.getParameter("imageId");
 		String commentText = request.getParameter("commentText");
 		String path = getServletContext().getContextPath();
 		ImageDAO imageDAO = new ImageDAO(connection);
 		CommentDAO commentDAO = new CommentDAO(connection);
-		
-		List<Image> images = new ArrayList<Image>();
-		
-		Integer imagePosition;
-		Integer imageId;
-		Integer albumId;
+		String errorMessage = null;
 
-		if( !CheckerUtility.checkAvailability(readImagePosition) ||
-			!CheckerUtility.checkAvailability(readAlbumId) ||
+		Integer imageId = -1;
+
+		if( !CheckerUtility.checkAvailability(readImageId) ||
 			!CheckerUtility.checkAvailability(commentText) )
 		{
-			response.sendRedirect(getServletContext().getContextPath() + "/Home");
-			return;
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			errorMessage = "Missing id or comment text";
 		}
 
+		if(errorMessage == null) {
+			try {
+				imageId = Integer.parseInt(readImageId);
+			} catch (NumberFormatException e) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				errorMessage = "Invalid id or comment text";
+			}
+		}
+		
+		//todo check if the image actually exists
 		try {
-			imagePosition = Integer.parseInt(readImagePosition);
-			albumId = Integer.parseInt(readAlbumId);
-		} catch (NumberFormatException e) {
-			//This might need to go somewhere else, but for now it's easiest to redirect to Home
-			response.sendRedirect(getServletContext().getContextPath() + "/Home");
-			return;
+			if(imageDAO.getImageFromId(imageId) == null) {
+				errorMessage = "The image doesn't exist";
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);		
+			}
+		} catch (SQLException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			errorMessage = "Could not validate image existence";
 		}
 
-		//Get the image list
-		try {
-			images = imageDAO.getImagesInAlbum(albumId);
-		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database connection");
-			return;
+		if(errorMessage == null) {
+			try {
+				commentDAO.createComment(imageId, username, commentText);
+			} catch (SQLException e) {
+				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+				errorMessage = "Could not create the comment";
+			}
 		}
 		
-		//There is at least the same amount of images as the position read from the form
-		imageId = images.get(imagePosition-1).getId();
+		Gson gson = new GsonBuilder().setDateFormat("yyyy/MM/dd").create();
+        HashMap<String, Object> valuesToSend = new HashMap<String, Object>();
+        String jsonResponse;
 		
-		try {
-			commentDAO.createComment(imageId, username, commentText);
-		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database connection");
-			return;
+		if(errorMessage != null) {
+			valuesToSend.put("errorMessage", errorMessage);
 		}
-		
-		response.sendRedirect( path + "/Album?id=" + readAlbumId + "&page=" + readPageNumber + "&image=" + readImagePosition);
+		else {
+			response.setStatus(HttpServletResponse.SC_OK);
+		}
+    	
+		jsonResponse = gson.toJson(valuesToSend);   	
+    	response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(jsonResponse);
     	
     }
 
