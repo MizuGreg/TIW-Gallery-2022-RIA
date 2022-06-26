@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import it.polimi.tiw.utility.CheckerUtility;
 import it.polimi.tiw.utility.ConnectionUtility;
 
 //@WebServlet("/LoginCheck")
+@MultipartConfig
 public class LoginCheck extends HttpServlet {
 
 	private Connection connection;
@@ -45,9 +47,7 @@ public class LoginCheck extends HttpServlet {
         UserDAO userDAO = new UserDAO(connection);
         String errorMessage = null;
         
-        if(!(CheckerUtility.checkAvailability(username) ||
-           	 CheckerUtility.checkAvailability(password))){
-        
+        if(!(CheckerUtility.checkAvailability(username) || CheckerUtility.checkAvailability(password))) {
         	errorMessage = "Invalid inputs received"; // btw this should never happen cause the client's javascript shouldn't allow it
         	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }

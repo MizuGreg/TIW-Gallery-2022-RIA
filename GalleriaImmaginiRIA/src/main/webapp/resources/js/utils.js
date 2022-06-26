@@ -7,10 +7,8 @@ function makeCall(method, url, formElement, callback, reset = false) {
 	request.open(method, url);
 	if (formElement == null) request.send();
 	else {
-		console.log("Sending request (makeCall)");
-		console.log(formElement);
-		console.log(new FormData(formElement));
-		request.send(new FormData(formElement));
+		var formData = new FormData(formElement);
+		request.send(formData);
 		if (reset) {
 			formElement.reset();
 		}

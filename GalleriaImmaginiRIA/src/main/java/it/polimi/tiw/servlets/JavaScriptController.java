@@ -25,7 +25,6 @@ public class JavaScriptController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("helloooooooo\n\n\n\njavascript\n\n\n");
 		String readString = request.getPathInfo();
 		
 		if(!CheckerUtility.checkValidJs(readString)) {
