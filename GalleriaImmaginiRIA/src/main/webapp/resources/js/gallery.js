@@ -264,9 +264,9 @@
 			document.getElementById("albumDiv").style.visibility = "visible";
 		};
 
-		this.update = function(imagesListInput) {
-			const imagesList = imagesListInput; // boh qui firefox dice che il parametro formale è dichiarato 2 volte
-			const imagesToDisplay = imagesList.slice(this.page*5, this.page*5+5);
+		this.update = (imagesListInput) => {
+			this.imagesList = imagesListInput;
+			const imagesToDisplay = this.imagesList.slice(this.page*5, this.page*5+5);
 			const imageCells = this.albumView.rows[0].cells;
 			const titleCells = this.albumView.rows[1].cells;
 			for (var i = 0; i < imagesToDisplay.length; i++) {
@@ -275,7 +275,7 @@
 				imageCells[i].appendChild(img);
 				titleCells[i].appendChild(document.createTextNode(imagesToDisplay[i].title));
 			}
-			if (imagesToDisplay.length < 5 || imagesList.length/5 == this.page-1) {
+			if (imagesToDisplay.length < 5 || this.imagesList.length/5 == this.page-1) {
 				this.succButton.style.visibility = "hidden";
 			} else {
 				this.succButton.style.visibility = "visible";
@@ -301,10 +301,12 @@
 		this.makeModalShowable = (numberOfCells) => {
 			const imageCells = this.albumView.rows[0].cells;
 			for (var i = 0; i < numberOfCells; i++) {
-				if (imageCells[i].innerHTML != "") 
+				if (imageCells[i].innerHTML != "") {
+					console.log(this.imagesList[this.page*5+i].id);
 					imageCells[i].onmouseover = () => {
 						this.orchestrator.refresh(-1, this.imagesList[this.page*5+i].id, -1);
 					};
+				}
 			}
 		};
 
