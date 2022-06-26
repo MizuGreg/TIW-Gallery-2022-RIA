@@ -31,14 +31,14 @@
 			</tbody>
 		</table>
 		<br>
-		<div id="createAlbumButton">
-			<a href="#createAlbum">
-				<button>Create a new album</button>
-			</a>
-		</div>
 		<div id="customOrderButton">
 			<a href="#customAlbumOrder">
 				<button>Save this album order</button>
+			</a>
+		</div>
+		<div id="createAlbumButton">
+			<a href="#createAlbum">
+				<button>Create a new album</button>
 			</a>
 		</div>
 	</div>

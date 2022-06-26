@@ -21,7 +21,8 @@
 			albumView = new AlbumView(
 				document.getElementById("albumView"),
 				document.getElementById("precButton"),
-				document.getElementById("succButton")
+				document.getElementById("succButton"),
+				document.getElementById("editAlbumButton")
 			);
 			albumView.registerEvents(this);
 
@@ -197,22 +198,21 @@
 		};
 
 		this.createAlbum = () => {
+			this.newlyCreatedAlbumId = null;
 			var self = this;
 			makeCall("GET", "CreateAlbum", null, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
 					const responseJson = JSON.parse(request.responseText);
 					console.log(responseJson);
 					if (request.status == 200) {
-						// todo: get new album id
+						self.newlyCreatedAlbumId = request.albumId;
 					} else {
 						alert("There was an error while fetching the albums from the server. " +
 						"Error: " + responseJson.errorMessage);
 					}
 				}
 			});
-			//todo: fetch new album id
-			var newlyCreatedId;
-			this.orchestrator.refresh(-1, null, newlyCreatedId);
+			this.orchestrator.refresh(-1, null, this.newlyCreatedAlbumId);
 		};
 
 		this.pushNewOrder = () => {
@@ -220,12 +220,13 @@
 		};
 	}
 	
-	function AlbumView(albumView, precButton, succButton) {
+	function AlbumView(albumView, precButton, succButton, editButton) {
 		this.albumView = albumView;
 		this.imagesList;
 		this.page = 0;
 		this.precButton = precButton;
 		this.succButton = succButton;
+		this.editButton = editButton;
 
 		this.registerEvents = (pageOrchestrator) => {
 			this.orchestrator = pageOrchestrator;
@@ -235,7 +236,9 @@
 			this.succButton.onclick = () => {
 				this.nextPage();
 			};
-			//todo: album edit button
+			this.editButton.onclick = () => {
+				this.editAlbum();
+			};
 		}
 
 		this.reset = function () {
