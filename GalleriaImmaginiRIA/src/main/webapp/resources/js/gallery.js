@@ -18,7 +18,7 @@
 					document.getElementById("userAlbums"),
 					document.getElementById("othersAlbums"),
 					document.getElementById("createAlbumButton"),
-					document.getElementById("customOrderButton"),
+					document.getElementById("customOrderButton")
 				);
 				albumsList.registerEvents(this);
 
