@@ -31,6 +31,7 @@ version="4.0">
 		<param-value>com.mysql.cj.jdbc.Driver</param-value>	
 	</context-param>
 	 
+	 <!-- Check servlets -->
 	<servlet>
 		<servlet-name>SignupCheck</servlet-name>
 		<servlet-class>it.polimi.tiw.servlets.SignupCheck</servlet-class>
@@ -54,6 +55,17 @@ version="4.0">
 		<servlet-name>LoginCheck</servlet-name>
 		<url-pattern>/LoginCheck</url-pattern>
 	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>Logout</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.Logout</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Logout</servlet-name>
+		<url-pattern>/Logout</url-pattern>
+	</servlet-mapping>
+
+	<!-- Servlets for database altering operations -->
 
 	<servlet>
 		<servlet-name>EditAlbum</servlet-name>
@@ -82,6 +94,8 @@ version="4.0">
 		<url-pattern>/CreateComment</url-pattern>
 	</servlet-mapping>
 
+	<!-- Servlets to switch between pages -->
+
 	<servlet>
 		<servlet-name>GoToLoginPage</servlet-name>
 		<servlet-class>it.polimi.tiw.servlets.GoToLoginPage</servlet-class>
@@ -100,16 +114,8 @@ version="4.0">
 		<url-pattern>/Galleria</url-pattern>
 	</servlet-mapping>	
 
+	<!-- Servlets to get server resources -->
 	
-	
-	<servlet>
-		<servlet-name>Logout</servlet-name>
-		<servlet-class>it.polimi.tiw.servlets.Logout</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Logout</servlet-name>
-		<url-pattern>/Logout</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>ImageController</servlet-name>
 		<servlet-class>it.polimi.tiw.servlets.ImageController</servlet-class>
@@ -133,6 +139,26 @@ version="4.0">
 	<servlet-mapping>
 		<servlet-name>JavaScriptController</servlet-name>
 		<url-pattern>/js/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Servlets to get databaseresources -->
+	
+	<servlet>
+		<servlet-name>GetAlbums</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.GetAlbums</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GetAlbums</servlet-name>
+		<url-pattern>/GetAlbums</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>GetAlbum</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.GetAlbum</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GetAlbum</servlet-name>
+		<url-pattern>/Album</url-pattern>
 	</servlet-mapping>
 
 	<!-- We can add filters to pre/post process requests/responses -->
