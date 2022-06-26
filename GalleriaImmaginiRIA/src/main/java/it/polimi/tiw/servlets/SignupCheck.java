@@ -3,6 +3,8 @@ package it.polimi.tiw.servlets;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +46,7 @@ public class SignupCheck extends HttpServlet {
 
 		String username = request.getParameter("username");
 		String email = request.getParameter("email");
-		String password = request.getParameter("password");
+		String password = request.getParameter("signupPassword");
 		String repeatPassword = request.getParameter("repeatPassword");
 		
 		UserDAO userDAO = new UserDAO(connection);
@@ -106,12 +108,12 @@ public class SignupCheck extends HttpServlet {
 		}
 		
 		Gson gson = new GsonBuilder().setDateFormat("yyyy/MM/dd").create();
+        HashMap<String, Object> valuesToSend = new HashMap<String, Object>();
+        String jsonResponse;
+		
 		//If an error occurred, send it as a json message
 		if(errorMessage != null) {
-			String errorJson = gson.toJson(errorMessage);
-        	response.setContentType("application/json");
-    		response.setCharacterEncoding("UTF-8");
-    		response.getWriter().write(errorJson);
+			valuesToSend.put("errorMessage", errorMessage);
 		}
 		else { // everything went smoothly
 			response.setStatus(HttpServletResponse.SC_OK);
@@ -121,13 +123,14 @@ public class SignupCheck extends HttpServlet {
 			if(session.isNew()){
 				request.getSession().setAttribute("username", username);
 			}
-			String usernameJson = gson.toJson(username);
-        	response.setContentType("application/json");
-    		response.setCharacterEncoding("UTF-8");
-    		response.getWriter().write(usernameJson);
+			
+			valuesToSend.put("username", username);
 		}
-		// We don't want a refreshing issue, so we redirect
-				
+		
+		jsonResponse = gson.toJson(valuesToSend);   	
+    	response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(jsonResponse);
 	}
 	
 	public void destroy() {

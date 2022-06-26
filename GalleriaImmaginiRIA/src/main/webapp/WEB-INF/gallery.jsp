@@ -52,7 +52,7 @@
 	</div>
 	<br><hr><br>
 	<div>
-		<h2>Album view</h3>
+		<h2>Album view</h2>
 		<table border="1">
 			<tbody>
 				<tr>

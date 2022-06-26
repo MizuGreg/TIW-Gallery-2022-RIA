@@ -1,7 +1,7 @@
 (function() {
 	console.log("hello");
-	loginFormPath = "CheckLogin";
-	signupFormPath = "CheckSignup";
+	loginFormPath = "LoginCheck";
+	signupFormPath = "SignupCheck";
 	
 	var loginForm = new LoginForm(document.getElementById("loginForm"));
 	var signupForm = new SignupForm(document.getElementById("signupForm"));
@@ -30,7 +30,7 @@
 								sessionStorage.setItem("username", responseJson.usernameJson);
 								window.location.href = "gallery.js";
 							} else {
-								alert(responseJson.errorJson);
+								alert(responseJson.errorMessage);
 							}
 						}
 					});

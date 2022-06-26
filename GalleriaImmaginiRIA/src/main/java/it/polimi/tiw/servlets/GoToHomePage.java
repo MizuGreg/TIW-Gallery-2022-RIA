@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
@@ -22,43 +23,22 @@ import it.polimi.tiw.utility.ConnectionUtility;
 public class GoToHomePage extends HttpServlet{
 	
 	private static final long serialVersionUID = 1L;
-	private Connection connection;
     
 	@Override
     public void init() throws ServletException {
-    
-		connection = ConnectionUtility.getConnection(getServletContext());
-		
+    	
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
-    	String htmlPath = "/WEB-INF/home_page.jsp";
-		ServletContext servletContext = getServletContext();
+    	String htmlPath = "/WEB-INF/gallery.jsp";
     	
     	//Query string components: none
+    	//Thanks to the filter, this page can't be accessed by someone not logged in
     	
-    	//Gets this user's albums (username in the session)
-    	AlbumDAO albumDAO = new AlbumDAO(connection);
-    	HttpSession session = request.getSession();
-    	List<Album> userAlbums = null;
-    	List<Album> othersAlbums = null;
-    	
-    	try {
-    		//The username is present and not null thanks to the filter 
-			userAlbums = albumDAO.getAlbumsOfUser((String)session.getAttribute("username"));
-			othersAlbums = albumDAO.getAllAlbums();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in retrieving albums");
-		}
-    	
-    	//Gets other users' albums, excluding this user's
-    	othersAlbums.removeAll(userAlbums);  
-    	
-    	//They are already in descending order (see DAO implementation)
-
+    	RequestDispatcher requestDispatcher = request.getRequestDispatcher(htmlPath);
+        requestDispatcher.include(request, response);
     }
 
     @Override
@@ -68,11 +48,6 @@ public class GoToHomePage extends HttpServlet{
 
     @Override
     public void destroy() {
-    	try {
-			ConnectionUtility.closeConnection(connection);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    	
     }
 }
