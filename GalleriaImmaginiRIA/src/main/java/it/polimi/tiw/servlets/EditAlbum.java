@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,9 @@ import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import it.polimi.tiw.beans.Image;
 import it.polimi.tiw.dao.AlbumDAO;
@@ -54,74 +58,87 @@ public class EditAlbum extends HttpServlet {
 		Map<Integer, Boolean> selectedUserImages = null;
 		String[] readCheckboxes = null;
 		List<String> listOfReadCheckboxes = null;
+		String errorMessage = null;
 
 		if (!CheckerUtility.checkAvailability(readAlbumId) || !CheckerUtility.checkAvailability(albumTitle)) {
 			// todo go back to the previous screen? back to just the album?
-			response.sendRedirect(getServletContext().getContextPath() + "/Home");
-			return;
+			errorMessage = "Missing parameters, change aborted";
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 
-		try {
-			albumId = Integer.parseInt(readAlbumId); // Hidden parameter in ALBUM_EDIT_PAGE that will be submitted on
-														// pressing the submit button
-		} catch (NumberFormatException e) {
-			response.sendRedirect(getServletContext().getContextPath() + "/Home");
-			return;
+		if(errorMessage == null) {
+			try {
+				albumId = Integer.parseInt(readAlbumId); // Hidden parameter in ALBUM_EDIT_PAGE that will be submitted on
+															// pressing the submit button
+			} catch (NumberFormatException e) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				errorMessage = "Missing album id, change aborted";
+			}
 		}
 
-		try {
-			userImages = imageDAO.getImagesOfUser((String) request.getSession().getAttribute("username"));
-		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database connection");
-		}
-
-		selectedUserImages = new LinkedHashMap<Integer, Boolean>();
-
-		readCheckboxes = request.getParameterValues("checkedImages");
-		try {
-			listOfReadCheckboxes = Arrays.asList(readCheckboxes);
-		} catch (NullPointerException e) {
-			// If no image was selected, create an empty list
-			listOfReadCheckboxes = new ArrayList<String>();
+		if(errorMessage == null) {
+			try {
+				userImages = imageDAO.getImagesOfUser((String) request.getSession().getAttribute("username"));
+			} catch (SQLException e) {
+				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+				errorMessage = "Couldn't get the images for this user, change aborted";
+			}
 		}
 		
-		for (Image image : userImages) {
-			if (!listOfReadCheckboxes.contains(String.valueOf(image.getId()))) { // This image wasn't selected
-				selectedUserImages.put(image.getId(), false);
-			} else {
-				selectedUserImages.put(image.getId(), true);
+		if(errorMessage == null) {
+		
+			selectedUserImages = new LinkedHashMap<Integer, Boolean>();
+			readCheckboxes = request.getParameterValues("checkedImages");
+			
+			try {
+				listOfReadCheckboxes = Arrays.asList(readCheckboxes);
+			} catch (NullPointerException e) {
+				// If no image was selected, create an empty list
+				listOfReadCheckboxes = new ArrayList<String>();
 			}
-		}
-
-		try {
-			connection.setAutoCommit(false);
-		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database connection");
-		}
-
-		try { 
-			albumDAO.updateTitleOfAlbum(albumTitle, albumId);
-			albumDAO.deleteAllImagesInAlbum(albumId);
-			for (Integer imageId : selectedUserImages.keySet()) {
-				if (selectedUserImages.get(imageId)) {
-					albumDAO.addImageToAlbum(imageId, albumId);
+			
+			for (Image image : userImages) {
+				if (!listOfReadCheckboxes.contains(String.valueOf(image.getId()))) { // This image wasn't selected
+					selectedUserImages.put(image.getId(), false);
+				} else {
+					selectedUserImages.put(image.getId(), true);
 				}
 			}
-		} catch (SQLException e) {
+	
 			try {
-				connection.rollback();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				connection.setAutoCommit(false);
+			} catch (SQLException e) {
+				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+				errorMessage = "Failure in database connection";
 			}
 		}
-
+		if(errorMessage == null) {
+			try { 
+				albumDAO.updateTitleOfAlbum(albumTitle, albumId);
+				albumDAO.deleteAllImagesInAlbum(albumId);
+				for (Integer imageId : selectedUserImages.keySet()) {
+					if (selectedUserImages.get(imageId)) {
+						albumDAO.addImageToAlbum(imageId, albumId);
+					}
+				}
+			} catch (SQLException e) {
+				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+				errorMessage = "Failure in update operation, the edit was cancelled";
+				try {
+					connection.rollback();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		}
 		
 		// If everything went smoothly
 		try {
 			connection.commit();
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database connection");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			errorMessage = "Failure in database connection";
 		} finally {
 			try {
 				connection.setAutoCommit(true);
@@ -131,7 +148,23 @@ public class EditAlbum extends HttpServlet {
 			}
 		}
 
-		response.sendRedirect(getServletContext().getContextPath() + "/Home");
+		Gson gson = new GsonBuilder().setDateFormat("yyyy/MM/dd").create();
+		HashMap<String, Object> valuesToSend = new HashMap<String, Object>();
+		String jsonResponse;
+		
+		//If an error was found, send it as a json message
+		if (errorMessage != null) {
+			valuesToSend.put("errorMessage", errorMessage);
+		} else { // everything went smoothly
+			// Do nothing
+			response.setStatus(HttpServletResponse.SC_OK);
+		}
+	   
+	    jsonResponse = gson.toJson(valuesToSend);   	
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(jsonResponse);
+		
 	}
 
 	@Override

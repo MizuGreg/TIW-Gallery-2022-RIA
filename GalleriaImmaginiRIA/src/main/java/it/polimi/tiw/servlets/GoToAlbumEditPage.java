@@ -26,6 +26,7 @@ import it.polimi.tiw.dao.ImageDAO;
 import it.polimi.tiw.utility.CheckerUtility;
 import it.polimi.tiw.utility.ConnectionUtility;
 
+@Deprecated
 //@WebServlet("/AlbumEdit")
 public class GoToAlbumEditPage extends HttpServlet {
 	

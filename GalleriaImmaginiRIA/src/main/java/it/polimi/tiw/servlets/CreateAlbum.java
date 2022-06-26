@@ -87,6 +87,7 @@ public class CreateAlbum extends HttpServlet {
 		if (errorMessage != null) {
 			valuesToSend.put("errorMessage", errorMessage);
 		} else { // everything went smoothly
+			response.setStatus(HttpServletResponse.SC_OK);
 			valuesToSend.put("albumId", newlyCreatedAlbumId); 
 		}
 	   

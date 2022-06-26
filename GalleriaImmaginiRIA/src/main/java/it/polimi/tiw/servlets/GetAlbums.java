@@ -63,6 +63,7 @@ public class GetAlbums extends HttpServlet{
 			valuesToSend.put("errorMessage", errorMessage);
 		}
 		else {
+			response.setStatus(HttpServletResponse.SC_OK);
 			valuesToSend.put("userAlbums", userAlbums);
 			valuesToSend.put("othersAlbums", othersAlbums);
 		}

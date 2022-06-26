@@ -94,6 +94,7 @@ public class GetImageInfo extends HttpServlet{
 		if (errorMessage != null) {
 			valuesToSend.put("errorMessage", errorMessage);
 		} else { // everything went smoothly
+			response.setStatus(HttpServletResponse.SC_OK);
 			valuesToSend.put("image", image);
 			valuesToSend.put("comments", comments);
 		}
