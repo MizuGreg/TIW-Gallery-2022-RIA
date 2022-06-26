@@ -85,7 +85,7 @@
 							if (next) next(); // ???
 						} else {
 							alert("There was an error while fetching the albums from the server. " +
-							"Please try again later. Error: " + responseJson.errorJson);
+							"Please try again later. Error: " + responseJson.errorMessage);
 						}
 					}
 				});

@@ -128,14 +128,13 @@ public class AlbumDAO {
 	}
 
 	/**
-	 * Gets them by the specified ordering (in ascending order) if present, 
-	 * otherwise from newest to oldest (date in descending order).
+	 * Gets them from newest to oldest (date in descending order).
 	 */
 	public List<Album> getAllAlbums() throws SQLException{
 		List<Album> albumList = new ArrayList<Album>();
 		String query = "SELECT id, title, date, creator_username, ordering "
 				+ 		"FROM album A "
-				+ 		"ORDER BY ordering ASC, date DESC";
+				+ 		"ORDER BY date DESC";
 		ResultSet resultSet = null;
 		PreparedStatement preparedStatement = null;
 		
