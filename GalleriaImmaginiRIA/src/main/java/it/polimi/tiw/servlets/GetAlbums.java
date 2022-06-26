@@ -46,7 +46,7 @@ public class GetAlbums extends HttpServlet{
 			userAlbums = albumDAO.getAlbumsOfUser((String)session.getAttribute("username"));
 			othersAlbums = albumDAO.getAllAlbums();
 		} catch (SQLException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 			errorMessage = "Failure in retrieving albums";
 		}
     	
