@@ -32,12 +32,12 @@
 		</table>
 		<br>
 		<div id="createAlbumButton">
-			<a href="#createAlbum"> <!-- hashes are actually useless tho -->
+			<a href="#createAlbum">
 				<button>Create a new album</button>
 			</a>
 		</div>
 		<div id="customOrderButton">
-			<a href="#customAlbumOrder"> <!-- hashes are actually useless tho -->
+			<a href="#customAlbumOrder">
 				<button>Save this album order</button>
 			</a>
 		</div>
@@ -83,7 +83,7 @@
 		</table>
 		<br>
 		<div id="editAlbumButton">
-			<a href="#editAlbum"> <!-- hashes are actually useless tho -->
+			<a href="#editAlbum">
 				<button>Edit this album</button>
 			</a>
 		</div>
@@ -91,11 +91,11 @@
 	<br><hr><br>
 	<div id="editDiv">
 		<h2>Edit album</h2>
-		<!-- TODO id to use: "AlbumEditView" -->
+		<!-- TODO id to use for this part: "AlbumEditView" -->
 	</div>
 	<br><hr><br>
-	<div id="modalWindow" class="modal">
-		<div class="modal-content">
+	<div id="modalWindow">
+		<div id="modalContent">
 			<span id="closeButton">&times;</span>
 			<div id="imageView">
 				<p>Some text in the modal window.</p> <!-- TODO -->

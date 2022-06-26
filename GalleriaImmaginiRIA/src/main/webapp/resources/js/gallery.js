@@ -4,12 +4,8 @@
 	var albumsList, albumView, imageView, albumEditView;
 	
 	window.addEventListener("load", () => {
-		if (sessionStorage.getItem("username") == null) {
-			window.location.href = "login_page.jsp"; // client-side LoggedFilter
-		} else {
-			pageOrchestrator.start();
-			pageOrchestrator.refresh(null, null, null);
-		}
+		pageOrchestrator.start();
+		pageOrchestrator.refresh(null, null, null);
 	});
 
 	function PageOrchestrator() {
@@ -200,6 +196,19 @@
 		};
 
 		this.createAlbum = () => {
+			var self = this;
+			makeCall("GET", "CreateAlbum", null, function(request) {
+				if (request.readyState == XMLHttpRequest.DONE) {
+					const responseJson = JSON.parse(request.responseText);
+					console.log(responseJson);
+					if (request.status == 200) {
+						// todo: get new album id
+					} else {
+						alert("There was an error while fetching the albums from the server. " +
+						"Error: " + responseJson.errorMessage);
+					}
+				}
+			});
 			//todo: fetch new album id
 			var newlyCreatedId;
 			this.orchestrator.refresh(-1, null, newlyCreatedId);
