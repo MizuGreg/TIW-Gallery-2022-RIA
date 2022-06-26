@@ -10,7 +10,7 @@
 </head>
 <body>
 	<div id="logoutButton">
-		<a href="#logout"> <!-- hashes are actually useless tho -->
+		<a href="Logout"> <!-- hashes are actually useless tho -->
 			<button>Logout</button>
 		</a>
 	</div>

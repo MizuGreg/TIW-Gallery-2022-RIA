@@ -35,9 +35,10 @@
 			);
 			albumEditView.registerEvents(this);
 
+			// Miiiiiight not work
 			document.getElementById("logoutButton").addEventListener("click", () => {
 				window.sessionStorage.removeItem("username"); // client-side logout
-				window.location.href = "login_page.html";
+				window.location.href = "";
 			});
 		};
 
