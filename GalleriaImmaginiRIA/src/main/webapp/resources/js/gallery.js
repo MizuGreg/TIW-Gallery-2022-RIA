@@ -241,7 +241,7 @@
 				makeCall("GET", "Album?id=" + albumId, null, function(request) {
 					if (request.readyState == XMLHttpRequest.DONE) {
 						const responseJson = JSON.parse(request.responseText);
-						console.log(responseJson); // forse è responseJson.imagesList ?
+						console.log(responseJson.imagesList); // sì c: grazie <3 
 						if (request.status == 200) {
 							// fill the view with json content
 							self.update(responseJson);
