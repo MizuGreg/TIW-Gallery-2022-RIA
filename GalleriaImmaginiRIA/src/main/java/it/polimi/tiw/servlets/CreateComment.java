@@ -58,7 +58,7 @@ public class CreateComment extends HttpServlet{
 		ImageDAO imageDAO = new ImageDAO(connection);
 		CommentDAO commentDAO = new CommentDAO(connection);
 		String errorMessage = null;
-
+		
 		Integer imageId = -1;
 
 		if( !CheckerUtility.checkAvailability(readImageId) ||

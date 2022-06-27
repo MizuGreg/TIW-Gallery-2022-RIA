@@ -22,7 +22,7 @@
 				var form = e.target.closest("form"); // looks for the form near where the event is
 
 				if (form.checkValidity()) {
-					makeCall("POST", loginFormPath, form, 
+					makeCallForm("POST", loginFormPath, form, 
 					function(request) {
 						if (request.readyState == XMLHttpRequest.DONE) {
 							const responseJson = JSON.parse(request.responseText);
@@ -51,7 +51,7 @@
 				
 				if (form.checkValidity()) {
 					if (this.elements["signupPassword"].value == this.elements["repeatPassword"].value) {
-						makeCall("POST", signupFormPath, form, 
+						makeCallForm("POST", signupFormPath, form, 
 						function(request) {
 							if (request.readyState == XMLHttpRequest.DONE) {
 								const responseJson = JSON.parse(request.responseText);

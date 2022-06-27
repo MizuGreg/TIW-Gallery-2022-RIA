@@ -42,7 +42,9 @@
 			</a>
 		</div>
 	</div>
+
 	<br>
+
 	<div id="othersDiv">
 		<h2>Other users' albums</h2>
 		<table border="1">
@@ -58,49 +60,26 @@
 			</tbody>
 		</table>
 	</div>
-	<br><hr><br>
+	
 	<div id="albumDiv">
+		<br><hr><br>
 		<h2>Album view</h2>
-		<table>
-			<tbody>
-				<tr>
-					<td>
-						<div id="precButton">
-							<a href="#prec"> <!-- hashes are actually useless tho -->
-								<button>Precedente</button>
-							</a>
-						</div>
-					</td>
-					<td>
-						<table border="1">
-							<tbody id="albumView">
-								<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
-								<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
-							</tbody>
-						</table>
-					</td>
-					<td>
-						<div id="succButton">
-							<a href="#succ"> <!-- hashes are actually useless tho -->
-								<button>Successivo</button>
-							</a>
-						</div>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<div id="albumPlusButtons">
+			<div id="precButton">
+				<a href="#prec"> <!-- hashes are actually useless tho -->
+					<button>Precedente</button>
+				</a>
+			</div>
+			<table border="1">
+				<tbody id="albumView">
+				</tbody>
+			</table>
+			<div id="succButton">
+				<a href="#succ"> <!-- hashes are actually useless tho -->
+					<button>Successivo</button>
+				</a>
+			</div>
+		</div>
 		<br>
 		<div id="editAlbumButton">
 			<a href="#editAlbum">
@@ -108,8 +87,9 @@
 			</a>
 		</div>
 	</div>
-	<br><hr><br>
+	
 	<div id="editDiv">
+		<br><hr><br>
 		<h2>Edit album</h2>
 		<!-- TODO id to use for this part: "AlbumEditView" -->
 	</div>
@@ -118,9 +98,21 @@
 		<div id="modalContent">
 			<span id="closeButton">&times;</span>
 			<div id="imageView">
-				<p>Some text in the modal window.</p> <!-- TODO -->
+				<!-- TODO: build the image -->
 			</div>
-			
+			<br>
+			<div id="commentsSection">
+				<!-- TODO: comments section -->
+			</div>
+			<br>
+			<div>
+				<textarea id="yourComment" placeholder="Your comment here..."></textarea>
+				<div id="newCommentButton">
+					<a href="#newComment">
+						<button>Enter comment</button>
+					</a>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>
