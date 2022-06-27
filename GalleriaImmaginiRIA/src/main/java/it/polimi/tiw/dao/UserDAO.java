@@ -92,8 +92,10 @@ public class UserDAO {
 	public User checkCredentials(String username, String password) throws SQLException{
 		// We need to create the database first, these names might change
 
-		String query = "SELECT username, email FROM user WHERE username = ? AND password = ?";
-		ResultSet resultSet = null; 
+		String query = "SELECT username, email "
+				+ 		"FROM user "
+				+ 		"WHERE BINARY username = ? "
+				+ 		"AND BINARY password = ?";		ResultSet resultSet = null; 
 		User resultUser = null;
 		PreparedStatement preparedStatement = null;
 
