@@ -1,4 +1,4 @@
-package it.polimi.tiw.servlets;
+package it.polimi.tiw.servlets.deprecated;
 
 import java.io.IOException;
 import java.sql.Connection;

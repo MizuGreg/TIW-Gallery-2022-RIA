@@ -1,4 +1,4 @@
-package it.polimi.tiw.servlets;
+package it.polimi.tiw.servlets.deprecated;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -27,7 +27,6 @@ import it.polimi.tiw.utility.CheckerUtility;
 import it.polimi.tiw.utility.ConnectionUtility;
 
 @Deprecated
-//@WebServlet("/AlbumEdit")
 public class GoToAlbumEditPage extends HttpServlet {
 	
 	private Connection connection;

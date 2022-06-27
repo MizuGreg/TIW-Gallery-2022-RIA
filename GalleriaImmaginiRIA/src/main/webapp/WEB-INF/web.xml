@@ -141,7 +141,7 @@ version="4.0">
 		<url-pattern>/js/*</url-pattern>
 	</servlet-mapping>
 	
-	<!-- Servlets to get databaseresources -->
+	<!-- Servlets to get database resources -->
 	
 	<servlet>
 		<servlet-name>GetAlbums</servlet-name>
@@ -168,6 +168,15 @@ version="4.0">
 	<servlet-mapping>
 		<servlet-name>GetImageInfo</servlet-name>
 		<url-pattern>/Image</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>GetAllYourImages</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.GetAllYourImages</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GetAllYourImages</servlet-name>
+		<url-pattern>/AlbumEdit</url-pattern>
 	</servlet-mapping>
 
 	<!-- We can add filters to pre/post process requests/responses -->
