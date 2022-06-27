@@ -91,18 +91,24 @@
 	<div id="editDiv">
 		<br><hr><br>
 		<h2>Edit album</h2>
-		<!-- TODO id to use for this part: "AlbumEditView" -->
+		<form action="#albumEdit" id="albumEditForm">
+			<div>
+				<label>Album title: </label> 
+				<input type="text" th:name="albumTitle"/>
+			</div>
+			<ul id="albumEditList">
+			</ul>			
+		</form>
+		<input type="button" id="albumEditButton" value="Edit album">
 	</div>
 	<br><hr><br>
 	<div id="modalWindow">
 		<div id="modalContent">
 			<span id="closeButton">&times;</span>
 			<div id="imageView">
-				<!-- TODO: build the image -->
 			</div>
 			<br>
 			<div id="commentsSection">
-				<!-- TODO: comments section -->
 			</div>
 			<br>
 			<div>

@@ -24,7 +24,7 @@ import it.polimi.tiw.dao.ImageDAO;
 import it.polimi.tiw.utility.CheckerUtility;
 import it.polimi.tiw.utility.ConnectionUtility;
 
-//@WebServlet("/AlbumEdit")
+//@WebServlet("/GetYourImages")
 public class GetAllYourImages extends HttpServlet {
 
 	private Connection connection;
@@ -97,7 +97,7 @@ public class GetAllYourImages extends HttpServlet {
 			}
     	}
         
-    	//Put the checboxes
+    	//Put the checkboxes
     	if(errorMessage == null) {
     		isContainedList = new LinkedHashMap<>();
     		for (Iterator<Image> iterator = imageList.iterator(); iterator.hasNext();) {

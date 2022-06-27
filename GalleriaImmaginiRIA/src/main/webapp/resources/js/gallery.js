@@ -9,7 +9,7 @@
 	});
 
 	function PageOrchestrator() {
-		this.start = function () {
+		this.start = () => {
 			albumsList = new AlbumsList(
 				document.getElementById("userAlbums"),
 				document.getElementById("othersAlbums"),
@@ -79,20 +79,20 @@
 
 		this.registerEvents = (pageOrchestrator) => {
 			this.orchestrator = pageOrchestrator;
-			this.createAlbumButton.onclick = () => {
+			this.createAlbumButton.addEventListener("click", () => {
 				this.createAlbum();
-			};
-			this.customOrderButton.onclick = () => {
+			})
+			this.customOrderButton.addEventListener("click", () => {
 				this.pushNewOrder();
-			};
+			});
 		}
 
-		this.reset = function () {
+		this.reset = () => {
 			document.getElementById("userDiv").style.display = "none";
 			document.getElementById("othersDiv").style.display = "none";
 		};
 
-		this.show = function (next) {
+		this.show = (next) => {
 			var self = this; // ugh
 			makeCall("GET", "GetAlbums", null, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
@@ -112,22 +112,23 @@
 			document.getElementById("othersDiv").style.display = "block";
 		};
 
-		this.updateUser = function(AlbumsArray) {
+		this.updateUser = (albumsArray) => {
 			this.userAlbums.innerHTML = "";
-			if (AlbumsArray.length == 0) {
+			if (albumsArray.length == 0) {
 				const row = this.userAlbums.insertRow();
 				const cell = row.insertCell();
 				cell.setAttribute("colspan", "3");
 				cell.appendChild(document.createTextNode("You have no albums yet! " +
 				"Create an album with the 'Create album' button."));
 			} else {
-				AlbumsArray.forEach(element => {
+				albumsArray.forEach(element => {
 					const row = this.userAlbums.insertRow();
 					const titleCell = row.insertCell();
 					titleCell.appendChild(document.createTextNode(element.title));
-					titleCell.onclick = () => {
+					
+					titleCell.addEventListener("click", () => {
 						this.orchestrator.refresh(element.id, null, null);
-					}
+					});
 					const idCell = row.insertCell();
 					idCell.appendChild(document.createTextNode(element.id));
 					const dateCell = row.insertCell();
@@ -138,13 +139,13 @@
 		};
 
 		this.makeOrderable = () => {
-			var draggingRow = null;
 			for (var i = 0, row; row = this.userAlbums.rows[i]; i++) {
-				//FIXME does not work
-				row.ondragstart = function startDrag() {
+				//FIXME cause it does not work
+				var draggingRow = null;
+				row.ondragstart = () => {
 					draggingRow = event.target;
 				};
-				row.ondragover = function dragOver(draggingRow) {
+				row.ondragover = () => {
 					e.preventDefault();
 					var t = event.target;
 					const rows = Array.from(t.parentNode.parentNode.children);
@@ -157,23 +158,23 @@
 			}
 		}
 
-		this.updateOthers = function(AlbumsArray) {
+		this.updateOthers = (albumsArray) => {
 			this.othersAlbums.innerHTML = "";
-			if (AlbumsArray.length == 0) {
+			if (albumsArray.length == 0) {
 				const row = this.othersAlbums.insertRow();
 				const cell = row.insertCell();
 				cell.setAttribute("colspan", "4");
 				cell.appendChild(document.createTextNode("There are no albums here! "));
 			} else {
-				AlbumsArray.forEach(element => {
+				albumsArray.forEach(element => {
 					const row = this.othersAlbums.insertRow();
 					const creatorCell = row.insertCell();
 					creatorCell.appendChild(document.createTextNode(element.creator_username));
 					const titleCell = row.insertCell();
 					titleCell.appendChild(document.createTextNode(element.title));
-					titleCell.onclick = () => {
+					titleCell.addEventListener("click", () => {
 						this.orchestrator.refresh(element.id, null, null);
-					};
+					});
 					const idCell = row.insertCell();
 					idCell.appendChild(document.createTextNode(element.id));
 					const dateCell = row.insertCell();
@@ -207,7 +208,7 @@
 					const responseJson = JSON.parse(request.responseText);
 					if (request.status == 200) {
 						newlyCreatedAlbumId = request.albumId;
-						self.orchestrator.refresh(null, self.newlyCreatedAlbumId, self.newlyCreatedAlbumId);
+						self.orchestrator.refresh(null, null, self.newlyCreatedAlbumId);
 					} else {
 						alert("There was an error while fetching the albums from the server. " +
 						"Error: " + responseJson.errorMessage);
@@ -248,24 +249,25 @@
 
 		this.registerEvents = (pageOrchestrator) => {
 			this.orchestrator = pageOrchestrator;
-			this.precButton.onclick = () => {
+			this.precButton.addEventListener("click", () => {
 				this.previousPage();
-			};
-			this.succButton.onclick = () => {
+			});
+			this.succButton.addEventListener("click", () => {
 				this.nextPage();
-			};
-			this.editButton.onclick = () => {
+			})
+			this.editButton.addEventListener("click", () => {
 				this.editAlbum();
-			};
+			})
 		}
 
-		this.reset = function () {
+		this.reset = () => {
 			document.getElementById("albumDiv").style.display = "none";
 			this.albumView.innerHTML = "";
 			this.albumId = -1;
+			this.page = 0;
 		};
 
-		this.show = function (albumId, next) {
+		this.show = (albumId, next) => {
 			this.albumId = albumId;
 			var self = this;
 			makeCall("GET", "Album?id=" + albumId, null, function(request) {
@@ -325,9 +327,9 @@
 			for (var i = 0; i < numberOfCells; i++) {
 				if (imageCells[i].innerHTML != "") { // useless check now
 					var imageId = this.imagesList[this.page*5+i].id;
-					imageCells[i].onmouseover = () => {
+					imageCells[i].addEventListener("mouseover", () => {
 						this.orchestrator.refresh(-1, imageId, -1);
-					};
+					});
 				}
 			}
 		};
@@ -339,7 +341,7 @@
 				if (request.readyState == XMLHttpRequest.DONE) {
 					const responseJson = JSON.parse(request.responseText);
 					if (request.status == 200) {
-						self.orchestrator.refresh(-1, editAlbumId, null);
+						self.orchestrator.refresh(null, editAlbumId, null);
 					} else {
 						alert("There was an error while fetching the albums from the server. " +
 						"Error: " + responseJson.errorMessage);
@@ -359,16 +361,15 @@
 		
 		this.registerEvents = (pageOrchestrator) => {
 			this.orchestrator = pageOrchestrator;
-			var self = this;
 			window.addEventListener("click", () => {
 				if (event.target == document.getElementById("modalWindow"))
-					self.reset();
+					this.reset();
 			});
 			document.getElementById("closeButton").addEventListener("click", () => {
-				self.reset();
+				this.reset();
 			});
 			this.newCommentButton.addEventListener("click", () => {
-				self.addComment();
+				this.addComment();
 			});
 		};
 
@@ -447,18 +448,75 @@
 		};
 	}
 
-	function AlbumEditView(albumEditView) {
-		this.albumEditView = albumEditView;
-		//TODO
-		this.registerEvents = () => {};
+	function AlbumEditView(albumEditForm, albumEditList) {
+		this.albumEditForm = albumEditForm;
+		this.albumEditList = albumEditList;
+		this.albumId = -1;
+
+		this.registerEvents = () => {
+			document.getElementById("albumEditButton").addEventListener("click", () => {
+				this.sendAlbumEdit();
+			});
+		};
 
 		this.reset = () => {
 			document.getElementById("editDiv").style.display = "none";
+			this.albumId = -1;
 		};
 
-		this.show = () => {};
+		this.show = (albumEditId) => {
+			this.albumId = albumEditId;
+			var self = this;
+			makeCall("GET", "AlbumEdit", null, function(request) {
+				if (request.readyState == XMLHttpRequest.DONE) {
+					const responseJson = JSON.parse(request.responseText);
+					console.log(responseJson);
+					if (request.status == 200) {
+						self.update(responseJson.imagesList);
+					} else {
+						alert("There was an error while fetching the images from the server. " +
+						"Error: " + responseJson.errorMessage);
+					}
+				}
+			})
+			document.getElementById("editDiv").style.display = "block";
+		};
 
-		this.update = () => {};
+		this.update = (imagesList) => {
+			imagesList.forEach(element => {
+				const li = document.createElement("li");
+				this.albumEditList.appendChild(li);
+
+				const checkbox = document.createElement("input");
+				checkbox.type = "checkbox";
+				checkbox.value = element.key.id;
+				checkbox.checked = element.value;
+				li.appendChild(checkbox);
+
+				const img = document.createElement("img");
+				img.src = element.key.path;
+				li.appendChild(img);
+			})
+		};
+
+		this.sendAlbumEdit = () => {
+			var formData = new FormData(this.albumEditForm);
+			formData.append("id", this.albumId);
+			var self = this;
+
+			makeCall("POST", "EditAlbum", formData, function(request) {
+				if (request.readyState == XMLHttpRequest.DONE) {
+					const responseJson = JSON.parse(request.responseText);
+					console.log(responseJson);
+					if (request.status == 200) {
+						self.orchestrator.refresh(self.albumId, null, null);
+					} else {
+						alert("There was an error while sending the edits to the server. " +
+						"Error: " + responseJson.errorMessage);
+					}
+				}
+			})
+		}
 	}
 
 })();

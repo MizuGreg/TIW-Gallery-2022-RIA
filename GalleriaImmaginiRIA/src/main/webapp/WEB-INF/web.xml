@@ -176,7 +176,7 @@ version="4.0">
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>GetAllYourImages</servlet-name>
-		<url-pattern>/AlbumEdit</url-pattern>
+		<url-pattern>/GetYourImages</url-pattern>
 	</servlet-mapping>
 
 	<!-- We can add filters to pre/post process requests/responses -->
