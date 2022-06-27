@@ -215,7 +215,23 @@
 		};
 
 		this.pushNewOrder = () => {
-			//todo: get all IDs into an array and send it to server
+			var orderedIDs = {};
+			this.userAlbums.rows.forEach(row => {
+				orderedIDs.push(row.cells[1].value);
+			});
+			var formData = new FormData();
+			formData.append("albumIds", orderedIDs);
+			makeCall("POST", "UpdateOrdering", formData, function(request) {
+				if (request.readyState == XMLHttpRequest.DONE) {
+					const responseJson = JSON.parse(request.responseText);
+					if (request.status == 200) {
+						// do nothing
+					} else {
+						alert("There was an error while saving the custom album order. " +
+						"Error: " + responseJson.errorMessage);
+					}
+				}
+			});
 		};
 	}
 	
@@ -397,8 +413,8 @@
 		this.updateComments = (comments) => {
 			var createCommentTable = (user, text) => {
 				const commentTable = document.createElement("table");
-				commentTable.insertRow().insertCell().appendChild(document.createTextNode(user + " said:"));
-				commentTable.insertRow().insertCell().appendChild(document.createTextNode(text));
+				commentTable.createTBody().insertRow().insertCell().appendChild(document.createTextNode(text));
+				commentTable.createTHead().insertRow().insertCell().appendChild(document.createTextNode(user + " said:"));
 				return commentTable;
 			}
 			comments.forEach(comment => {

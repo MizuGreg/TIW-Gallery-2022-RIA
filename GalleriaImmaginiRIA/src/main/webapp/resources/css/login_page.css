@@ -3,3 +3,7 @@
 body {
   font-family: Helvetica, sans-serif;
 }
+
+fieldset {
+	background: #f9f9f9;
+}

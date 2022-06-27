@@ -19,7 +19,7 @@
 
 	<div id="userDiv">
 		<h2>Your albums</h2>
-		<table border="1">
+		<table>
 			<thead>
 				<tr>
 					<td>Title</td>
@@ -32,7 +32,7 @@
 		</table>
 		<br>
 		<div id="customOrderButton">
-			<a href="#customAlbumOrder">
+			<a href="#updateOrdering">
 				<button>Save this album order</button>
 			</a>
 		</div>
@@ -47,7 +47,7 @@
 
 	<div id="othersDiv">
 		<h2>Other users' albums</h2>
-		<table border="1">
+		<table>
 			<thead>
 				<tr>
 					<td>Creator</td>
@@ -70,7 +70,7 @@
 					<button>Precedente</button>
 				</a>
 			</div>
-			<table border="1">
+			<table>
 				<tbody id="albumView">
 				</tbody>
 			</table>
