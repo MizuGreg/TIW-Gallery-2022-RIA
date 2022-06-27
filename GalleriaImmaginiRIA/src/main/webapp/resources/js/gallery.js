@@ -27,7 +27,11 @@
 			albumView.registerEvents(this);
 
 			imageView = new ImageView(
-				document.getElementById("imageView")
+				document.getElementById("modalWindow"),
+				document.getElementById("imageView"),
+				document.getElementById("commentsSection"),
+				document.getElementById("yourComment"),
+				document.getElementById("newCommentButton")
 			);
 			imageView.registerEvents(this);
 
@@ -36,16 +40,14 @@
 			);
 			albumEditView.registerEvents(this);
 
-			// Miiiiiight not work
 			document.getElementById("logoutButton").addEventListener("click", () => {
 				window.sessionStorage.removeItem("username"); // client-side logout
-				window.location.href = "";
+				window.location.href = ""; // useless now
 			});
 		};
 
 		this.refresh = (newAlbumId, newImageId, albumEditId) => {
 			albumsList.reset();
-			albumView.reset();
 			albumsList.show();
 
 			if (newAlbumId != -1) {
@@ -65,7 +67,7 @@
 				if (albumEditId != null) {
 					albumEditView.show(albumEditId);
 				}
-			}			
+			}
 		};
 	}
 	
@@ -86,18 +88,15 @@
 		}
 
 		this.reset = function () {
-			document.getElementById("userDiv").style.visibility = "hidden";
-			document.getElementById("othersDiv").style.visibility = "hidden";
+			document.getElementById("userDiv").style.display = "none";
+			document.getElementById("othersDiv").style.display = "none";
 		};
 
 		this.show = function (next) {
-			document.getElementById("userDiv").style.visibility = "visible";
-			document.getElementById("othersDiv").style.visibility = "visible";
 			var self = this; // ugh
 			makeCall("GET", "GetAlbums", null, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
 					const responseJson = JSON.parse(request.responseText);
-					console.log(responseJson);
 					if (request.status == 200) {
 						// fill yourAlbums and othersAlbums with json content
 						self.updateUser(responseJson.userAlbums);
@@ -109,6 +108,8 @@
 					}
 				}
 			});
+			document.getElementById("userDiv").style.display = "block";
+			document.getElementById("othersDiv").style.display = "block";
 		};
 
 		this.updateUser = function(AlbumsArray) {
@@ -137,12 +138,13 @@
 		};
 
 		this.makeOrderable = () => {
-			var draggingRow;
+			var draggingRow = null;
 			for (var i = 0, row; row = this.userAlbums.rows[i]; i++) {
+				//FIXME does not work
 				row.ondragstart = function startDrag() {
 					draggingRow = event.target;
 				};
-				row.ondragover = function dragOver() {
+				row.ondragover = function dragOver(draggingRow) {
 					e.preventDefault();
 					var t = event.target;
 					const rows = Array.from(t.parentNode.parentNode.children);
@@ -198,30 +200,46 @@
 		};
 
 		this.createAlbum = () => {
-			this.newlyCreatedAlbumId = null;
+			var newlyCreatedAlbumId = null;
 			var self = this;
-			makeCall("GET", "CreateAlbum", null, function(request) {
+			makeCall("POST", "CreateAlbum", null, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
 					const responseJson = JSON.parse(request.responseText);
-					console.log(responseJson);
 					if (request.status == 200) {
-						self.newlyCreatedAlbumId = request.albumId;
+						newlyCreatedAlbumId = request.albumId;
+						self.orchestrator.refresh(null, self.newlyCreatedAlbumId, self.newlyCreatedAlbumId);
 					} else {
 						alert("There was an error while fetching the albums from the server. " +
 						"Error: " + responseJson.errorMessage);
 					}
 				}
 			});
-			this.orchestrator.refresh(null, null, this.newlyCreatedAlbumId);
 		};
 
 		this.pushNewOrder = () => {
-			//todo: get all IDs into an array and send it to server
+			var orderedIDs = [];
+			for (var i = 0, row; row = this.userAlbums.rows[i]; i++) {
+				orderedIDs.push(row.cells[1].value);
+			}
+			var formData = new FormData();
+			formData.append("albumIds", orderedIDs);
+			makeCall("POST", "UpdateOrdering", formData, function(request) {
+				if (request.readyState == XMLHttpRequest.DONE) {
+					const responseJson = JSON.parse(request.responseText);
+					if (request.status == 200) {
+						// do nothing
+					} else {
+						alert("There was an error while saving the custom album order. " +
+						"Error: " + responseJson.errorMessage);
+					}
+				}
+			});
 		};
 	}
 	
 	function AlbumView(albumView, precButton, succButton, editButton) {
 		this.albumView = albumView;
+		this.albumId = -1;
 		this.imagesList;
 		this.page = 0;
 		this.precButton = precButton;
@@ -242,15 +260,17 @@
 		}
 
 		this.reset = function () {
-			document.getElementById("albumDiv").style.visibility = "hidden"; // null error
+			document.getElementById("albumDiv").style.display = "none";
+			this.albumView.innerHTML = "";
+			this.albumId = -1;
 		};
 
 		this.show = function (albumId, next) {
+			this.albumId = albumId;
 			var self = this;
 			makeCall("GET", "Album?id=" + albumId, null, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
 					const responseJson = JSON.parse(request.responseText);
-					console.log(responseJson.imagesList); // sì c: grazie <3 
 					if (request.status == 200) {
 						// fill the view with json content
 						self.update(responseJson.imagesList);
@@ -261,29 +281,31 @@
 					}
 				}
 			});
-			document.getElementById("albumDiv").style.visibility = "visible";
+			document.getElementById("albumDiv").style.display = "block";
 		};
 
 		this.update = (imagesListInput) => {
 			this.imagesList = imagesListInput;
 			const imagesToDisplay = this.imagesList.slice(this.page*5, this.page*5+5);
-			const imageCells = this.albumView.rows[0].cells;
-			const titleCells = this.albumView.rows[1].cells;
+			const imageRow = this.albumView.insertRow();
+			const titleRow = this.albumView.insertRow();
 			for (var i = 0; i < imagesToDisplay.length; i++) {
-				const img = document.createElement('img');
+				const img = document.createElement("img");
 				img.src = imagesToDisplay[i].path;
-				imageCells[i].appendChild(img);
-				titleCells[i].appendChild(document.createTextNode(imagesToDisplay[i].title));
+				imageRow.insertCell().appendChild(img);
+				const title = document.createTextNode(imagesToDisplay[i].title);
+				titleRow.insertCell().appendChild(title);
 			}
+
 			if (imagesToDisplay.length < 5 || this.imagesList.length/5 == this.page-1) {
-				this.succButton.style.visibility = "hidden";
+				this.succButton.style.display = "none";
 			} else {
-				this.succButton.style.visibility = "visible";
+				this.succButton.style.display = "block";
 			}
 			if (this.page == 0) {
-				this.precButton.style.visibility = "hidden";
+				this.precButton.style.display = "none";
 			} else {
-				this.precButton.style.visibility = "visible";
+				this.precButton.style.display = "block";
 			}
 			this.makeModalShowable(imagesToDisplay.length);
 		}
@@ -301,30 +323,128 @@
 		this.makeModalShowable = (numberOfCells) => {
 			const imageCells = this.albumView.rows[0].cells;
 			for (var i = 0; i < numberOfCells; i++) {
-				if (imageCells[i].innerHTML != "") {
-					console.log(this.imagesList[this.page*5+i].id);
+				if (imageCells[i].innerHTML != "") { // useless check now
+					var imageId = this.imagesList[this.page*5+i].id;
 					imageCells[i].onmouseover = () => {
-						this.orchestrator.refresh(-1, this.imagesList[this.page*5+i].id, -1);
+						this.orchestrator.refresh(-1, imageId, -1);
 					};
 				}
 			}
 		};
 
 		this.editAlbum = () => {
-			//TODO
+			var editAlbumId = this.albumId;
+			var self = this;
+			makeCall("POST", "EditAlbum?id=" + editAlbumId, null, function(request) {
+				if (request.readyState == XMLHttpRequest.DONE) {
+					const responseJson = JSON.parse(request.responseText);
+					if (request.status == 200) {
+						self.orchestrator.refresh(-1, editAlbumId, null);
+					} else {
+						alert("There was an error while fetching the albums from the server. " +
+						"Error: " + responseJson.errorMessage);
+					}
+				}
+			})
 		};
 	}
 	
-	function ImageView(imageView) {
+	function ImageView(modalWindow, imageView, commentsSection, yourComment, newCommentButton) {
+		this.modalWindow = modalWindow;
 		this.imageView = imageView;
-		//TODO
-		this.registerEvents = () => {};
+		this.imageId = -1;
+		this.commentsSection = commentsSection;
+		this.yourComment = yourComment;
+		this.newCommentButton = newCommentButton;
+		
+		this.registerEvents = (pageOrchestrator) => {
+			this.orchestrator = pageOrchestrator;
+			var self = this;
+			window.addEventListener("click", () => {
+				if (event.target == document.getElementById("modalWindow"))
+					self.reset();
+			});
+			document.getElementById("closeButton").addEventListener("click", () => {
+				self.reset();
+			});
+			this.newCommentButton.addEventListener("click", () => {
+				self.addComment();
+			});
+		};
 
-		this.reset = () => {};
+		this.reset = () => {
+			this.modalWindow.style.display = "none";
+			this.imageView.innerHTML = "";
+			this.commentsSection.innerHTML = "";
+			this.yourComment.value = "";
+			this.imageId = -1;
+		};
 
-		this.show = () => {};
+		this.show = (imageId) => {
+			this.imageId = imageId;
+			var self = this;
+			makeCall("POST", "Image?id=" + imageId, null, function(request) {
+				if (request.readyState == XMLHttpRequest.DONE) {
+					const responseJson = JSON.parse(request.responseText);
+					if (request.status == 200) {
+						self.updateImage(responseJson.image);
+						self.updateComments(responseJson.comments);
+					} else {
+						alert("There was an error while fetching image info. " +
+						"Error: " + responseJson.errorMessage);
+					}
+				}
+			});
+			this.modalWindow.style.display = "block";
+		};
 
-		this.update = () => {};
+		this.updateImage = (image) => {
+			const imageTable = document.createElement("table");
+			this.imageView.appendChild(imageTable);
+
+			const imageRow = imageTable.insertRow();
+			const img = document.createElement("img");
+			img.src = image.path;
+			imageRow.insertCell().appendChild(img);
+			
+			imageTable.insertRow().insertCell().appendChild(document.createTextNode("Title: " + image.title));
+			imageTable.insertRow().insertCell().appendChild(document.createTextNode("Date: " + image.date));
+			imageTable.insertRow().insertCell().appendChild(document.createTextNode("Description: " + image.description));
+			imageTable.insertRow().insertCell().appendChild(document.createTextNode("Author: " + image.uploader_username));
+		};
+
+		this.updateComments = (comments) => {
+			var createCommentTable = (user, text) => {
+				const commentTable = document.createElement("table");
+				commentTable.createTBody().insertRow().insertCell().appendChild(document.createTextNode(text));
+				commentTable.createTHead().insertRow().insertCell().appendChild(document.createTextNode(user + " said:"));
+				return commentTable;
+			}
+			comments.forEach(comment => {
+				this.commentsSection.appendChild(createCommentTable(comment.user, comment.text));
+			});
+		};
+
+		this.addComment = () => {
+			if (this.yourComment.value == "") return;
+
+			var formData = new FormData();
+			formData.append("username", window.sessionStorage.getItem("username"));
+			formData.append("imageId", this.imageId);
+			formData.append("commentText", this.yourComment.value);
+			var self = this;
+			makeCall("POST", "CreateComment", formData, function(request) {
+				if (request.readyState == XMLHttpRequest.DONE) {
+					const responseJson = JSON.parse(request.responseText);
+					if (request.status == 200) {
+						self.orchestrator.refresh(-1, self.imageId, -1);
+					} else {
+						alert("There was an error while posting your comment. " +
+						"Error: " + responseJson.errorMessage);
+					}
+				}
+			});
+		};
 	}
 
 	function AlbumEditView(albumEditView) {
@@ -332,7 +452,9 @@
 		//TODO
 		this.registerEvents = () => {};
 
-		this.reset = () => {};
+		this.reset = () => {
+			document.getElementById("editDiv").style.display = "none";
+		};
 
 		this.show = () => {};
 
