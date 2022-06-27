@@ -287,13 +287,14 @@
 		};
 
 		this.update = (imagesListInput) => {
-			this.imagesList = imagesListInput;
+			this.imagesList = imagesListInput; // TODO fix slice
 			const imagesToDisplay = this.imagesList.slice(this.page*5, this.page*5+5);
 			const imageRow = this.albumView.insertRow();
 			const titleRow = this.albumView.insertRow();
 			for (var i = 0; i < imagesToDisplay.length; i++) {
 				const img = document.createElement("img");
 				img.src = imagesToDisplay[i].path;
+				img.classList.add("thumbnail");
 				imageRow.insertCell().appendChild(img);
 				const title = document.createTextNode(imagesToDisplay[i].title);
 				titleRow.insertCell().appendChild(title);
@@ -326,8 +327,10 @@
 			const imageCells = this.albumView.rows[0].cells;
 			for (var i = 0; i < numberOfCells; i++) {
 				if (imageCells[i].innerHTML != "") { // useless check now
-					var imageId = this.imagesList[this.page*5+i].id;
+					const imageId = this.imagesList[this.page*5+i].id;
+					console.log(imageCells[i], imageId);
 					imageCells[i].addEventListener("mouseover", () => {
+						console.log(imageId + "mouseover");
 						this.orchestrator.refresh(-1, imageId, -1);
 					});
 				}
@@ -406,6 +409,7 @@
 			const imageRow = imageTable.insertRow();
 			const img = document.createElement("img");
 			img.src = image.path;
+			img.classList.add("fullImage");
 			imageRow.insertCell().appendChild(img);
 			
 			imageTable.insertRow().insertCell().appendChild(document.createTextNode("Title: " + image.title));
