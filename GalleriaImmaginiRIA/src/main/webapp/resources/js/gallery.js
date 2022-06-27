@@ -138,12 +138,13 @@
 		};
 
 		this.makeOrderable = () => {
-			var draggingRow;
+			var draggingRow = null;
 			for (var i = 0, row; row = this.userAlbums.rows[i]; i++) {
+				//FIXME does not work
 				row.ondragstart = function startDrag() {
 					draggingRow = event.target;
 				};
-				row.ondragover = function dragOver() {
+				row.ondragover = function dragOver(draggingRow) {
 					e.preventDefault();
 					var t = event.target;
 					const rows = Array.from(t.parentNode.parentNode.children);
@@ -200,25 +201,26 @@
 
 		this.createAlbum = () => {
 			var newlyCreatedAlbumId = null;
+			var self = this;
 			makeCall("POST", "CreateAlbum", null, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
 					const responseJson = JSON.parse(request.responseText);
 					if (request.status == 200) {
 						newlyCreatedAlbumId = request.albumId;
+						self.orchestrator.refresh(null, self.newlyCreatedAlbumId, self.newlyCreatedAlbumId);
 					} else {
 						alert("There was an error while fetching the albums from the server. " +
 						"Error: " + responseJson.errorMessage);
 					}
 				}
 			});
-			this.orchestrator.refresh(null, null, this.newlyCreatedAlbumId);
 		};
 
 		this.pushNewOrder = () => {
-			var orderedIDs = {};
-			this.userAlbums.rows.forEach(row => {
+			var orderedIDs = [];
+			for (var i = 0, row; row = this.userAlbums.rows[i]; i++) {
 				orderedIDs.push(row.cells[1].value);
-			});
+			}
 			var formData = new FormData();
 			formData.append("albumIds", orderedIDs);
 			makeCall("POST", "UpdateOrdering", formData, function(request) {
@@ -332,11 +334,12 @@
 
 		this.editAlbum = () => {
 			var editAlbumId = this.albumId;
+			var self = this;
 			makeCall("POST", "EditAlbum?id=" + editAlbumId, null, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
 					const responseJson = JSON.parse(request.responseText);
 					if (request.status == 200) {
-						newlyCreatedAlbumId = request.albumId;
+						self.orchestrator.refresh(-1, editAlbumId, null);
 					} else {
 						alert("There was an error while fetching the albums from the server. " +
 						"Error: " + responseJson.errorMessage);
@@ -429,19 +432,18 @@
 			formData.append("username", window.sessionStorage.getItem("username"));
 			formData.append("imageId", this.imageId);
 			formData.append("commentText", this.yourComment.value);
-
+			var self = this;
 			makeCall("POST", "CreateComment", formData, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
 					const responseJson = JSON.parse(request.responseText);
 					if (request.status == 200) {
-						// do nothing
+						self.orchestrator.refresh(-1, self.imageId, -1);
 					} else {
 						alert("There was an error while posting your comment. " +
 						"Error: " + responseJson.errorMessage);
 					}
 				}
 			});
-			this.orchestrator.refresh(-1, this.imageId, -1);
 		};
 	}
 
