@@ -14,6 +14,9 @@ public class CheckerUtility {
 	public static boolean checkAvailability(String value) {
 		return (value != null && !value.isBlank() && !value.isEmpty());
 	}
+	public static boolean checkAvailability(String[] value) {
+		return (value != null);
+	}
 
 	public static boolean checkValidImage(String imageString) {
 		ArrayList<String> validFormats = new ArrayList<String>() {

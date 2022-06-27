@@ -362,4 +362,59 @@ public class AlbumDAO {
 		}
 		return code;
 	}
+	
+	public int resetOrdering(String username) throws SQLException{
+		String query =  "UPDATE album "
+				+ 		"SET ordering = 0 "
+				+ 		"WHERE username = ?";
+		int code = 0;
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, username);
+			code = preparedStatement.executeUpdate();
+		}
+		catch (SQLException e) {
+			throw new SQLException(e);
+		}
+		finally {
+			try {
+				if(preparedStatement != null) {
+					preparedStatement.close();
+				}
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return code;
+	}
+	
+	public int setOrdering(int albumId, int position) throws SQLException{
+		String query =  "UPDATE album "
+				+ 		"SET ordering = ? "
+				+ 		"WHERE id = ?";
+		int code = 0;
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1, position);
+			preparedStatement.setInt(2, albumId);
+			code = preparedStatement.executeUpdate();
+		}
+		catch (SQLException e) {
+			throw new SQLException(e);
+		}
+		finally {
+			try {
+				if(preparedStatement != null) {
+					preparedStatement.close();
+				}
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return code;
+	}
 }
