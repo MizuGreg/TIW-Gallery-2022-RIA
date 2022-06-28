@@ -163,18 +163,20 @@ public class EditAlbum extends HttpServlet {
 			}
 		}
 		
-		// If everything went smoothly
-		try {
-			connection.commit();
-		} catch (SQLException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
-			errorMessage = "Failure in database connection, couldn't commit the update";
-		} finally {
+		if(errorMessage == null) {
+			// If everything went smoothly
 			try {
-				connection.setAutoCommit(true);
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				connection.commit();
+			} catch (SQLException e) {
+				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+				errorMessage = "Failure in database connection, couldn't commit the update";
+			} finally {
+				try {
+					connection.setAutoCommit(true);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
 
