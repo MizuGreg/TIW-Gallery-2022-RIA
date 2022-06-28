@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import it.polimi.tiw.dao.ImageDAO;
 import it.polimi.tiw.utility.CheckerUtility;
 import it.polimi.tiw.utility.ConnectionUtility;
 
+@MultipartConfig
 //@WebServlet("/GetYourImages")
 public class GetAllYourImages extends HttpServlet {
 
@@ -50,6 +52,8 @@ public class GetAllYourImages extends HttpServlet {
 		String username = (String)request.getSession().getAttribute("username");
         String errorMessage = null;
        
+        readAlbumId = request.getParameter("id");
+        
         //Sanitization
         if(!CheckerUtility.checkAvailability(readAlbumId)) {
         	errorMessage = "Missing album id";
