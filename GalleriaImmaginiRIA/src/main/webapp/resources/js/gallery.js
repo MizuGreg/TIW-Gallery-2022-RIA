@@ -339,7 +339,7 @@
 
 		this.editAlbum = () => {
 			var editAlbumId = this.albumId;
-			this.orchestrator.refresh(null, editAlbumId, null);
+			this.orchestrator.refresh(null, null, editAlbumId);
 		};
 	}
 	
