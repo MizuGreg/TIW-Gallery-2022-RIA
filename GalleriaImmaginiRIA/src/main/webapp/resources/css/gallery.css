@@ -75,6 +75,15 @@ table thead {
   cursor: pointer;
 }
 
+.thumbnail {
+	width: 200px;
+	height: auto;
+}
+
+.fullImage {
+	max-width: 100%;
+}
+
 #imageView table {
 	width: 100%;
 	border: none;
