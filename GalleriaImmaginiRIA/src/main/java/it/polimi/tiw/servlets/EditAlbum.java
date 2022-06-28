@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.beans.Image;
 import it.polimi.tiw.dao.AlbumDAO;
 import it.polimi.tiw.dao.ImageDAO;
@@ -56,11 +57,14 @@ public class EditAlbum extends HttpServlet {
 		Integer albumId = -1;
 		ImageDAO imageDAO = new ImageDAO(connection);
 		AlbumDAO albumDAO = new AlbumDAO(connection);
+		Album album = null;
 		List<Image> userImages = null;
 		Map<Integer, Boolean> selectedUserImages = null;
 		String[] readCheckboxes = null;
 		List<String> listOfReadCheckboxes = null;
 		String errorMessage = null;
+		String username = (String)request.getSession().getAttribute("username");
+
 
 		if (!CheckerUtility.checkAvailability(readAlbumId) || !CheckerUtility.checkAvailability(albumTitle)) {
 			// todo go back to the previous screen? back to just the album?
@@ -77,6 +81,30 @@ public class EditAlbum extends HttpServlet {
 				errorMessage = "Missing album id, change aborted";
 			}
 		}
+		
+		//Ensure this album belongs to the user making the request
+		if(errorMessage == null) {
+			try {
+				album = albumDAO.getAlbumFromId(albumId);	
+			} catch (SQLException e) {
+				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+				errorMessage =  "Couldn't get the album, change aborted";
+			}
+		}
+		if(errorMessage == null) {
+			if (album == null) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				errorMessage = "The album wasn't found, change aborted";
+			}
+		}
+		
+		if(errorMessage == null) {
+			if(!album.getCreator_username().equals(username)) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				errorMessage = "You can't edit someone else's album!";
+			}
+		}
+		
 
 		if(errorMessage == null) {
 			try {
@@ -140,7 +168,7 @@ public class EditAlbum extends HttpServlet {
 			connection.commit();
 		} catch (SQLException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
-			errorMessage = "Failure in database connection";
+			errorMessage = "Failure in database connection, couldn't commit the update";
 		} finally {
 			try {
 				connection.setAutoCommit(true);
