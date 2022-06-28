@@ -34,16 +34,16 @@ public class GetAlbums extends HttpServlet{
 	@Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		//Gets this user's albums (username in the session)
 		AlbumDAO albumDAO = new AlbumDAO(connection);
 		HttpSession session = request.getSession();
 		List<Album> userAlbums = null;
 		List<Album> othersAlbums = null;
 		String errorMessage = null;
+		String username = (String)session.getAttribute("username");
 		
 		try {
     		//The username is present and not null thanks to the filter 
-			userAlbums = albumDAO.getAlbumsOfUser((String)session.getAttribute("username"));
+			userAlbums = albumDAO.getAlbumsOfUser(username);
 			othersAlbums = albumDAO.getAllAlbums();
 		} catch (SQLException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);

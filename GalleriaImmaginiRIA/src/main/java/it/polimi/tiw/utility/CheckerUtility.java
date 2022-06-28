@@ -14,6 +14,10 @@ public class CheckerUtility {
 	public static boolean checkAvailability(String value) {
 		return (value != null && !value.isBlank() && !value.isEmpty());
 	}
+	
+	/**
+	 * Checks if the given array is not null
+	 */
 	public static boolean checkAvailability(String[] value) {
 		return (value != null);
 	}

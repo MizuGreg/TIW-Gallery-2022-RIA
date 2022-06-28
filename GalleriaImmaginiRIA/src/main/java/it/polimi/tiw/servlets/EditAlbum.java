@@ -54,13 +54,13 @@ public class EditAlbum extends HttpServlet {
 
 		String readAlbumId = request.getParameter("id");
 		String albumTitle = request.getParameter("albumTitle");
+		String[] readCheckboxes = request.getParameterValues("checkedImages");
 		Integer albumId = -1;
 		ImageDAO imageDAO = new ImageDAO(connection);
 		AlbumDAO albumDAO = new AlbumDAO(connection);
 		Album album = null;
 		List<Image> userImages = null;
 		Map<Integer, Boolean> selectedUserImages = null;
-		String[] readCheckboxes = null;
 		List<String> listOfReadCheckboxes = null;
 		String errorMessage = null;
 		String username = (String)request.getSession().getAttribute("username");
@@ -108,7 +108,7 @@ public class EditAlbum extends HttpServlet {
 
 		if(errorMessage == null) {
 			try {
-				userImages = imageDAO.getImagesOfUser((String) request.getSession().getAttribute("username"));
+				userImages = imageDAO.getImagesOfUser(username);
 			} catch (SQLException e) {
 				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 				errorMessage = "Couldn't get the images for this user, change aborted";
@@ -118,7 +118,6 @@ public class EditAlbum extends HttpServlet {
 		if(errorMessage == null) {
 		
 			selectedUserImages = new LinkedHashMap<Integer, Boolean>();
-			readCheckboxes = request.getParameterValues("checkedImages");
 			
 			try {
 				listOfReadCheckboxes = Arrays.asList(readCheckboxes);

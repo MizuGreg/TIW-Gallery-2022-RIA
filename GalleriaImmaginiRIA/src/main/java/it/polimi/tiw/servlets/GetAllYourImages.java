@@ -41,7 +41,7 @@ public class GetAllYourImages extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	String readAlbumId = null;
+    	String readAlbumId = request.getParameter("id");
 		int albumId = 0;
 		AlbumDAO albumDAO = new AlbumDAO(connection);
 		ImageDAO imageDAO = new ImageDAO(connection);
@@ -51,8 +51,6 @@ public class GetAllYourImages extends HttpServlet {
 		LinkedHashMap<Image, Boolean> isContainedList = null;
 		String username = (String)request.getSession().getAttribute("username");
         String errorMessage = null;
-       
-        readAlbumId = request.getParameter("id");
         
         //Sanitization
         if(!CheckerUtility.checkAvailability(readAlbumId)) {
@@ -77,6 +75,9 @@ public class GetAllYourImages extends HttpServlet {
 				errorMessage = "Failure in retrieving the album from the database";
 				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 			}
+    	}
+    	
+    	if(errorMessage == null) {
     		if(album == null) {
     			errorMessage = "Invalid album id";
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

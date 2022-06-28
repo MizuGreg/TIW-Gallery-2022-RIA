@@ -41,15 +41,13 @@ public class GetImageInfo extends HttpServlet{
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
     	String errorMessage = null;
-    	String readImageId = null;
+    	String readImageId = request.getParameter("id");
     	int imageId = -1;
     	ImageDAO imageDAO = new ImageDAO(connection);
     	CommentDAO commentDAO = new CommentDAO(connection);
     	Image image = null;
     	List<Comment> comments = null;  
     	
-    	
-    	readImageId = request.getParameter("id");
     	
     	if(!CheckerUtility.checkAvailability(readImageId)) {
     		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -73,6 +71,13 @@ public class GetImageInfo extends HttpServlet{
 				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 				errorMessage = "Couldn't get the image from the database";
 			}
+    	}
+    	
+    	if(errorMessage == null) {
+    		if(image == null) {
+    			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	    		errorMessage = "Invalid image id";
+    		}
     	}
     	
     	if(errorMessage == null) {

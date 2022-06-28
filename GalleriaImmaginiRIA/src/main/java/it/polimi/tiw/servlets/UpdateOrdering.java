@@ -48,20 +48,18 @@ public class UpdateOrdering extends HttpServlet {
     	AlbumDAO albumDAO = new AlbumDAO(connection);
     	List<Album> userAlbumList = null;
     	List<Integer> userAlbumIdsList = null;
-        String[] readIds = null;
+        String[] readIds = request.getParameterValues("albumIds");
         List<String> listOfReadIds = null;
         List<Integer> integerIds = null;
         String username = (String) request.getSession().getAttribute("username");
         String errorMessage = null;
     	
     	// This user will send a list of album ids
-    	readIds = request.getParameterValues("albumIds");
+    
     	if(!CheckerUtility.checkAvailability(readIds)) {
     		errorMessage = "Missing inputs";
     		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     	}
-    	
-    	
     	
     	if(errorMessage == null) {
     		integerIds = new ArrayList<Integer>();

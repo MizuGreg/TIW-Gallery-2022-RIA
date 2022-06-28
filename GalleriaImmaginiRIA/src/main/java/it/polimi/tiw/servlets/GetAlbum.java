@@ -42,9 +42,10 @@ public class GetAlbum extends HttpServlet{
 		int albumId = 0;
 		boolean getFirstUserAlbum = false;
 		AlbumDAO albumDAO = new AlbumDAO(connection);
+		Album album = null; 
 		ImageDAO imageDAO = new ImageDAO(connection);
 		List<Image> imageList = null;
-
+		String albumTitle = null;
 		
         String errorMessage = null;
        
@@ -65,14 +66,30 @@ public class GetAlbum extends HttpServlet{
 			}
     	}
     	
+    	// Check that the album exists
     	if(errorMessage == null) {
+    		try {
+				album = albumDAO.getAlbumFromId(albumId);
+			} catch (SQLException e) {
+				errorMessage = "Failure in retrieving the album from the database";
+				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			}
+    	}
+    	
+    	if(errorMessage == null) {
+    		if(album == null) {
+    			errorMessage = "The album doesn't exist";
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    		}
+    	}
+    	
+    	// The input is clean
+    	
+    	
+    	if(errorMessage == null) {
+    		albumTitle = album.getTitle();
 	    	try { 
 				imageList = imageDAO.getImagesInAlbum(albumId);
-				//If the result is null, send an error
-				if(imageList == null) {
-					errorMessage = "Couldn't retrieve the images from the album with id " + albumId;
-					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				}
 			}
 	    	catch (SQLException e) {
 				errorMessage = "Failure in retrieving the images from the database";
@@ -90,6 +107,7 @@ public class GetAlbum extends HttpServlet{
 		} else { // everything went smoothly
 			response.setStatus(HttpServletResponse.SC_OK);
 			valuesToSend.put("imagesList", imageList); 
+			valuesToSend.put("albumTitle", albumTitle);
 		}
 	   
 	    jsonResponse = gson.toJson(valuesToSend);   	

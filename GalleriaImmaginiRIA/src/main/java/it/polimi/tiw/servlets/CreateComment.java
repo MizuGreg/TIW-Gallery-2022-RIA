@@ -73,21 +73,22 @@ public class CreateComment extends HttpServlet{
 				imageId = Integer.parseInt(readImageId);
 			} catch (NumberFormatException e) {
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				errorMessage = "Invalid id or comment text";
+				errorMessage = "Invalid id";
 			}
 		}
 		
-		//todo check if the image actually exists
-		try {
-			if(imageDAO.getImageFromId(imageId) == null) {
-				errorMessage = "The image doesn't exist";
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);		
+		if(errorMessage == null) {
+			//check if the image actually exists
+			try {
+				if(imageDAO.getImageFromId(imageId) == null) {
+					errorMessage = "The image doesn't exist";
+					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);		
+				}
+			} catch (SQLException e) {
+				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+				errorMessage = "Could not validate image existence";
 			}
-		} catch (SQLException e) {
-			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
-			errorMessage = "Could not validate image existence";
 		}
-
 		if(errorMessage == null) {
 			try {
 				commentDAO.createComment(imageId, username, commentText);
