@@ -37,6 +37,7 @@
 
 			albumEditView = new AlbumEditView(
 				document.getElementById("albumEditForm"),
+				document.getElementById("albumEditTitle"),
 				document.getElementById("albumEditList")
 			);
 			albumEditView.registerEvents(this);
@@ -93,7 +94,7 @@
 			document.getElementById("othersDiv").style.display = "none";
 		};
 
-		this.show = (next) => {
+		this.show = () => {
 			var self = this; // ugh
 			makeCall("GET", "GetAlbums", null, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
@@ -102,7 +103,6 @@
 						// fill yourAlbums and othersAlbums with json content
 						self.updateUser(responseJson.userAlbums);
 						self.updateOthers(responseJson.othersAlbums);
-						if (next) next(); // ???
 					} else {
 						alert("There was an error while fetching the albums from the server. " +
 						"Please try again later. Error: " + responseJson.errorMessage);
@@ -124,12 +124,13 @@
 			} else {
 				albumsArray.forEach(element => {
 					const row = this.userAlbums.insertRow();
+					row.draggable = true;
 					const titleCell = row.insertCell();
-					titleCell.draggable = true; // or maybe the whole row
 					titleCell.appendChild(document.createTextNode(element.title));
 					
 					titleCell.addEventListener("click", () => {
 						this.orchestrator.refresh(element.id, null, null);
+						albumView.showEditButton(false);
 					});
 					const idCell = row.insertCell();
 					idCell.appendChild(document.createTextNode(element.id));
@@ -145,7 +146,7 @@
 			for (var i = 0, row; row = this.userAlbums.rows[i]; i++) {
 				//FIXME cause it does not work
 				row.addEventListener("dragstart", (event) => {
-					draggingRow = event.target; //.parentNode
+					draggingRow = event.target;
 				});
 				row.addEventListener("dragover", (event) => {
 					event.preventDefault();
@@ -176,6 +177,7 @@
 					titleCell.appendChild(document.createTextNode(element.title));
 					titleCell.addEventListener("click", () => {
 						this.orchestrator.refresh(element.id, null, null);
+						albumView.showEditButton(true);
 					});
 					const idCell = row.insertCell();
 					idCell.appendChild(document.createTextNode(element.id));
@@ -205,12 +207,16 @@
 		this.createAlbum = () => {
 			var newlyCreatedAlbumId = null;
 			var self = this;
+			var setTitle = () => {
+				albumEditView.setTitle("Unnamed album"); // this works
+			}
 			makeCall("POST", "CreateAlbum", null, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
 					const responseJson = JSON.parse(request.responseText);
 					if (request.status == 200) {
-						newlyCreatedAlbumId = request.albumId;
+						newlyCreatedAlbumId = responseJson.albumId;
 						self.orchestrator.refresh(null, null, newlyCreatedAlbumId);
+						setTitle();
 					} else {
 						alert("There was an error while fetching the albums from the server. " +
 						"Error: " + responseJson.errorMessage);
@@ -224,13 +230,14 @@
 			for (var i = 0, row; row = this.userAlbums.rows[i]; i++) {
 				orderedIDs.push(row.cells[1].value);
 			}
+			console.log(orderedIDs);
 			var formData = new FormData();
 			formData.append("albumIds", orderedIDs);
 			makeCall("POST", "UpdateOrdering", formData, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
 					const responseJson = JSON.parse(request.responseText);
 					if (request.status == 200) {
-						// do nothing
+						alert("New album order saved.");
 					} else {
 						alert("There was an error while saving the custom album order. " +
 						"Error: " + responseJson.errorMessage);
@@ -277,8 +284,7 @@
 					const responseJson = JSON.parse(request.responseText);
 					if (request.status == 200) {
 						// fill the view with json content
-						self.update(responseJson.imagesList);
-						if (next) next(); // ??? delete this BS
+						self.update(responseJson.title, responseJson.imagesList);
 					} else {
 						alert("There was an error while fetching this album from the server. " +
 						"Please try again later. Error: " + responseJson.errorMessage);
@@ -288,7 +294,8 @@
 			document.getElementById("albumDiv").style.display = "block";
 		};
 
-		this.update = (imagesListInput) => {
+		this.update = (title, imagesListInput) => {
+			// document.getElementById("albumNameHeader").value = title;
 			if (imagesListInput != null)
 				this.imagesList = imagesListInput;
 			const imagesToDisplay = this.imagesList.slice(this.page*5, this.page*5+5);
@@ -318,11 +325,13 @@
 
 		this.previousPage = () => {
 			this.page--;
+			this.albumView.innerHTML = "";
 			this.update();
 		};
 
 		this.nextPage = () => {
 			this.page++;
+			this.albumView.innerHTML = "";
 			this.update();
 		};
 
@@ -340,9 +349,17 @@
 			}
 		};
 
+		this.showEditButton = (showBool) => {
+			console.log("showeditbutton " + showBool);
+			if (showBool) this.editButton.style.visibility = "hidden";
+			else this.editButton.style.visibility = "visible";
+		}
+
 		this.editAlbum = () => {
 			var editAlbumId = this.albumId;
 			this.orchestrator.refresh(null, null, editAlbumId);
+			const title = document.getElementById("albumNameHeader").value;
+			albumEditView.setTitle(title);
 		};
 	}
 	
@@ -407,13 +424,15 @@
 			imageTable.insertRow().insertCell().appendChild(document.createTextNode("Title: " + image.title));
 			imageTable.insertRow().insertCell().appendChild(document.createTextNode("Date: " + image.date));
 			imageTable.insertRow().insertCell().appendChild(document.createTextNode("Description: " + image.description));
-			imageTable.insertRow().insertCell().appendChild(document.createTextNode("Author: " + image.uploader_username));
+			imageTable.insertRow().insertCell().appendChild(document.createTextNode("Uploader: " + image.uploader_username));
 		};
 
 		this.updateComments = (comments) => {
 			var createCommentTable = (user, text) => {
 				const commentTable = document.createElement("table");
-				commentTable.createTBody().insertRow().insertCell().appendChild(document.createTextNode(text));
+				const commentText = document.createElement("pre"); //preformatted text => for newlines
+				commentText.innerHTML = text;
+				commentTable.createTBody().insertRow().insertCell().appendChild(commentText);
 				commentTable.createTHead().insertRow().insertCell().appendChild(document.createTextNode(user + " said:"));
 				return commentTable;
 			}
@@ -444,12 +463,14 @@
 		};
 	}
 
-	function AlbumEditView(albumEditForm, albumEditList) {
+	function AlbumEditView(albumEditForm, albumEditTitle, albumEditList) {
 		this.albumEditForm = albumEditForm;
+		this.albumEditTitle = albumEditTitle;
 		this.albumEditList = albumEditList;
 		this.albumId = -1;
 
-		this.registerEvents = () => {
+		this.registerEvents = (pageOrchestrator) => {
+			this.orchestrator = pageOrchestrator;
 			document.getElementById("albumEditButton").addEventListener("click", () => {
 				this.sendAlbumEdit();
 			});
@@ -479,7 +500,8 @@
 		};
 
 		this.update = (imagesList) => {
-			imagesList.forEach(element => {
+			var imagesArray = Array.from(imagesList);
+			imagesArray.forEach(element => {
 				const li = document.createElement("li");
 				this.albumEditList.appendChild(li);
 
@@ -495,7 +517,15 @@
 			})
 		};
 
+		this.setTitle = (oldTitle) => {
+			this.albumEditTitle.value = oldTitle;
+		};
+
 		this.sendAlbumEdit = () => {
+			if (!this.albumEditForm.checkValidity()) { // title not null
+				this.albumEditForm.reportValidity();
+				return;
+			}
 			var formData = new FormData(this.albumEditForm);
 			formData.append("id", this.albumId);
 			var self = this;

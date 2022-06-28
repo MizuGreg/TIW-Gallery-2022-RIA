@@ -63,7 +63,7 @@
 	
 	<div id="albumDiv">
 		<br><hr><br>
-		<h2>Album view</h2>
+		<h2 id ="albumNameHeader">Album view</h2>
 		<div id="albumPlusButtons">
 			<div id="precButton">
 				<a href="#prec"> <!-- hashes are actually useless tho -->
@@ -94,7 +94,7 @@
 		<form action="#albumEdit" id="albumEditForm">
 			<div>
 				<label>Album title: </label> 
-				<input type="text" th:name="albumTitle"/>
+				<input type="text" id="albumEditTitle" name="albumTitle" required/>
 			</div>
 			<ul id="albumEditList">
 			</ul>			
