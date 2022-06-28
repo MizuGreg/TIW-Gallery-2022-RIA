@@ -36,7 +36,8 @@
 			imageView.registerEvents(this);
 
 			albumEditView = new AlbumEditView(
-				document.getElementById("albumEditView")
+				document.getElementById("albumEditForm"),
+				document.getElementById("albumEditList")
 			);
 			albumEditView.registerEvents(this);
 
@@ -124,6 +125,7 @@
 				albumsArray.forEach(element => {
 					const row = this.userAlbums.insertRow();
 					const titleCell = row.insertCell();
+					titleCell.draggable = true; // or maybe the whole row
 					titleCell.appendChild(document.createTextNode(element.title));
 					
 					titleCell.addEventListener("click", () => {
@@ -139,14 +141,14 @@
 		};
 
 		this.makeOrderable = () => {
+			var draggingRow = null;
 			for (var i = 0, row; row = this.userAlbums.rows[i]; i++) {
 				//FIXME cause it does not work
-				var draggingRow = null;
-				row.ondragstart = () => {
-					draggingRow = event.target;
-				};
-				row.ondragover = () => {
-					e.preventDefault();
+				row.addEventListener("dragstart", (event) => {
+					draggingRow = event.target; //.parentNode
+				});
+				row.addEventListener("dragover", (event) => {
+					event.preventDefault();
 					var t = event.target;
 					const rows = Array.from(t.parentNode.parentNode.children);
 
@@ -154,7 +156,7 @@
 						t.parentNode.after(draggingRow);
 					else
 						t.parentNode.before(draggingRow);
-				}
+				});
 			}
 		}
 
@@ -208,7 +210,7 @@
 					const responseJson = JSON.parse(request.responseText);
 					if (request.status == 200) {
 						newlyCreatedAlbumId = request.albumId;
-						self.orchestrator.refresh(null, null, self.newlyCreatedAlbumId);
+						self.orchestrator.refresh(null, null, newlyCreatedAlbumId);
 					} else {
 						alert("There was an error while fetching the albums from the server. " +
 						"Error: " + responseJson.errorMessage);
@@ -267,7 +269,7 @@
 			this.page = 0;
 		};
 
-		this.show = (albumId, next) => {
+		this.show = (albumId) => {
 			this.albumId = albumId;
 			var self = this;
 			makeCall("GET", "Album?id=" + albumId, null, function(request) {
@@ -287,7 +289,8 @@
 		};
 
 		this.update = (imagesListInput) => {
-			this.imagesList = imagesListInput; // TODO fix slice
+			if (imagesListInput != null)
+				this.imagesList = imagesListInput;
 			const imagesToDisplay = this.imagesList.slice(this.page*5, this.page*5+5);
 			const imageRow = this.albumView.insertRow();
 			const titleRow = this.albumView.insertRow();
@@ -376,7 +379,7 @@
 		this.show = (imageId) => {
 			this.imageId = imageId;
 			var self = this;
-			makeCall("POST", "Image?id=" + imageId, null, function(request) {
+			makeCall("GET", "Image?id=" + imageId, null, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
 					const responseJson = JSON.parse(request.responseText);
 					if (request.status == 200) {

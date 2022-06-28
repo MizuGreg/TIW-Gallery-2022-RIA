@@ -8,6 +8,7 @@ table {
 	width: 100%;
 	border: 1px solid black;
 	border-collapse: collapse;
+	user-select: none; /* needed for d&d */
 }
 
 table td, thead {
