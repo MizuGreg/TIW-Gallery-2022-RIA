@@ -460,7 +460,7 @@
 		this.show = (albumEditId) => {
 			this.albumId = albumEditId;
 			var self = this;
-			makeCall("GET", "GetYourImages", null, function(request) {
+			makeCall("GET", "GetYourImages?id=" + albumEditId, null, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
 					const responseJson = JSON.parse(request.responseText);
 					console.log(responseJson);
