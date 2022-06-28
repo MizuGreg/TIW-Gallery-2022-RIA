@@ -193,6 +193,10 @@ version="4.0">
 		<url-pattern>/CreateComment</url-pattern>  
 		<url-pattern>/EditAlbum</url-pattern>
 		<url-pattern>/CreateAlbum</url-pattern>
+		<url-pattern>/GetAlbums</url-pattern>
+		<url-pattern>/Album</url-pattern>
+		<url-pattern>/Image</url-pattern>
+		<url-pattern>/GetYourImages</url-pattern>
 	</filter-mapping>
 		
 </web-app>
