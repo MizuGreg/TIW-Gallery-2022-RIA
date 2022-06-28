@@ -101,7 +101,6 @@
 		</form>
 		<input type="button" id="albumEditButton" value="Edit album">
 	</div>
-	<br><hr><br>
 	<div id="modalWindow">
 		<div id="modalContent">
 			<span id="closeButton">&times;</span>

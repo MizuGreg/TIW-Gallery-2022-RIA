@@ -44,7 +44,7 @@
 
 			document.getElementById("logoutButton").addEventListener("click", () => {
 				window.sessionStorage.removeItem("username"); // client-side logout
-				window.location.href = ""; // useless now
+				window.location.href = ""; // superseded by HTML-side redirect
 			});
 		};
 
@@ -144,7 +144,6 @@
 		this.makeOrderable = () => {
 			var draggingRow = null;
 			for (var i = 0, row; row = this.userAlbums.rows[i]; i++) {
-				//FIXME cause it does not work
 				row.addEventListener("dragstart", (event) => {
 					draggingRow = event.target;
 				});
@@ -208,7 +207,7 @@
 			var newlyCreatedAlbumId = null;
 			var self = this;
 			var setTitle = () => {
-				albumEditView.setTitle("Unnamed album"); // this works
+				albumEditView.setTitle("Unnamed album");
 			}
 			makeCall("POST", "CreateAlbum", null, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
@@ -341,11 +340,11 @@
 				if (imageCells[i].innerHTML != "") { // useless check now
 					const imageId = this.imagesList[this.page*5+i].id;
 					console.log(imageCells[i], imageId);
-					imageCells[i].addEventListener("mouseover", () => {
+					imageCells[i].childNodes[0].addEventListener("mouseover", () => {
 						console.log(imageId + "mouseover");
 						this.orchestrator.refresh(-1, imageId, -1);
 					});
-				}
+				} else console.log("did the impossible!");
 			}
 		};
 
@@ -489,7 +488,7 @@
 					const responseJson = JSON.parse(request.responseText);
 					console.log(responseJson);
 					if (request.status == 200) {
-						self.update(responseJson.imagesList);
+						self.update(responseJson.imagesMap);
 					} else {
 						alert("There was an error while fetching the images from the server. " +
 						"Error: " + responseJson.errorMessage);
@@ -499,22 +498,21 @@
 			document.getElementById("editDiv").style.display = "block";
 		};
 
-		this.update = (imagesList) => {
-			var imagesArray = Array.from(imagesList);
-			imagesArray.forEach(element => {
-				const li = document.createElement("li");
-				this.albumEditList.appendChild(li);
+		this.update = (imagesMap) => { // how to iterate through this???
+			for (const [image, isPresent] of imagesMap) {
+				const liNode = document.createElement("li");
+				this.albumEditList.appendChild(liNode);
 
 				const checkbox = document.createElement("input");
 				checkbox.type = "checkbox";
-				checkbox.value = element.key.id;
-				checkbox.checked = element.value;
-				li.appendChild(checkbox);
+				checkbox.value = image.id;
+				checkbox.checked = isPresent;
+				liNode.appendChild(checkbox);
 
-				const img = document.createElement("img");
-				img.src = element.key.path;
-				li.appendChild(img);
-			})
+				const imgNode = document.createElement("img");
+				imgNode.src = image.path;
+				liNode.appendChild(imgNode);
+			}
 		};
 
 		this.setTitle = (oldTitle) => {
@@ -522,7 +520,7 @@
 		};
 
 		this.sendAlbumEdit = () => {
-			if (!this.albumEditForm.checkValidity()) { // title not null
+			if (!this.albumEditForm.checkValidity()) { // check title not null
 				this.albumEditForm.reportValidity();
 				return;
 			}
