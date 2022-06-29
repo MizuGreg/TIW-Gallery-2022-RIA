@@ -31,7 +31,7 @@ CREATE TABLE `album` (
   PRIMARY KEY (`id`),
   KEY `creator_username_idx` (`creator_username`),
   CONSTRAINT `album_username` FOREIGN KEY (`creator_username`) REFERENCES `user` (`username`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `album` (
 
 LOCK TABLES `album` WRITE;
 /*!40000 ALTER TABLE `album` DISABLE KEYS */;
-INSERT INTO `album` VALUES (10,'Mi piacciono gli animali :)','2022-06-20 00:31:34','user1',0),(12,'Buongiorno mondo non mi piacciono gli animali','2022-06-20 10:43:21','user3',0),(15,'album for hating animals','2022-06-20 12:29:50','animalHater87',0),(16,'My favourite animals','2022-06-21 21:50:55','user1',0),(17,'my otters','2022-06-27 19:31:05','OtterLover',0),(18,'Beautiful buildings','2022-06-27 20:21:49','animalHater87',0),(19,'Sono così belle che ho deciso di dedicare loro un altro album','2022-06-27 21:59:34','OtterLover',0);
+INSERT INTO `album` VALUES (10,'Mi piacciono gli animali :)','2022-06-20 00:31:34','user1',0),(12,'Buongiorno mondo non mi piacciono gli animali','2022-06-20 10:43:21','user3',0),(15,'album for hating animals','2022-06-20 12:29:50','animalHater87',0),(16,'My favourite animals','2022-06-21 21:50:55','user1',0),(17,'my otters','2022-06-27 19:31:05','OtterLover',0),(18,'Beautiful buildings','2022-06-27 20:21:49','animalHater87',0),(19,'Sono così belle che ho deciso di dedicare loro un altro album','2022-06-27 21:59:34','OtterLover',0),(20,'Stunning birds','2022-06-29 12:41:15','user1',0),(21,'Fantasy creatures','2022-06-29 12:41:57','user1',0),(22,'Quadrupeds','2022-06-29 12:42:17','user1',0);
 /*!40000 ALTER TABLE `album` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -97,7 +97,7 @@ CREATE TABLE `containment` (
 
 LOCK TABLES `containment` WRITE;
 /*!40000 ALTER TABLE `containment` DISABLE KEYS */;
-INSERT INTO `containment` VALUES (2,10),(3,10),(4,10),(5,10),(6,10),(7,10),(8,10),(9,10),(10,10),(11,10),(12,10),(3,16),(4,16),(15,17),(16,17),(17,18),(18,18),(15,19),(16,19);
+INSERT INTO `containment` VALUES (2,10),(3,10),(4,10),(5,10),(6,10),(7,10),(8,10),(9,10),(10,10),(11,10),(12,10),(3,16),(4,16),(15,17),(16,17),(17,18),(18,18),(15,19),(16,19),(7,20),(11,20),(12,20),(9,21),(12,21),(2,22),(3,22),(4,22),(5,22),(6,22),(8,22),(9,22);
 /*!40000 ALTER TABLE `containment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -166,4 +166,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-28 19:32:03
+-- Dump completed on 2022-06-29 12:43:45
