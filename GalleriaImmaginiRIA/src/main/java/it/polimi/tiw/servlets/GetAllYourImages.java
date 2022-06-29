@@ -130,7 +130,7 @@ public class GetAllYourImages extends HttpServlet {
 			//This doesn't work so easily, json needs the map 
 			// to be processed first 
 			
-			valuesToSend.put("images", imageList);
+			valuesToSend.put("imagesList", imageList);
 			valuesToSend.put("isPresentList", isContainedList);
 		}
 	   
