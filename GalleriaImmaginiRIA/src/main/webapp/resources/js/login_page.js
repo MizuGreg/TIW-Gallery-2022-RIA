@@ -40,7 +40,7 @@
 				if (form.checkValidity()) {
 					if (this.elements["signupPassword"].value == this.elements["repeatPassword"].value) {
 						var formData = new FormData(form);
-						makeCall("POST", "SignupCheck", form, (response) => {
+						makeCall("POST", "SignupCheck", formData, (response) => {
 							sessionStorage.setItem("username", response.username);
 							window.location.href = "Galleria";
 						}, (response) => {
