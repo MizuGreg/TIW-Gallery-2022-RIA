@@ -4,6 +4,42 @@ body {
   font-family: Helvetica, sans-serif;
 }
 
+input[type=button] {
+  background-color: #295c84;
+  border-radius: 8px;
+  border-style: none;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  height: 40px;
+  line-height: 20px;
+  list-style: none;
+  margin: 0;
+  outline: none;
+  padding: 10px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: color 100ms; /* for transitioning between colors */
+  vertical-align: center;
+  user-select: none; /* you cannot select text inside this button */
+}
+
+input[type=button]:hover,
+input[type=button]:focus {
+  background-color: #004084;
+}
+
+pre, textarea {
+	font-family: Helvetica, sans-serif;
+	font-size: 14px;
+}
+
 fieldset {
 	background: #f8ffff;
+	border-radius: 10px;
 }

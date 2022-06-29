@@ -104,6 +104,7 @@
 				"Please try again later. Error: " + response.errorMessage);
 			});
 			document.getElementById("userDiv").style.display = "block";
+			this.customOrderButton.style.display = "block";
 			document.getElementById("othersDiv").style.display = "block";
 		};
 
@@ -114,8 +115,10 @@
 				const cell = row.insertCell();
 				cell.setAttribute("colspan", "3");
 				cell.appendChild(document.createTextNode("You have no albums yet! " +
-				"Create an album with the 'Create album' button."));
+				"Create an album with the 'Create a new album' button."));
+				this.customOrderButton.style.display = "none";
 			} else {
+				if (albumsArray.length == 1) this.customOrderButton.style.display = "none";
 				albumsArray.forEach(element => {
 					const row = this.userAlbums.insertRow();
 					row.draggable = true;
@@ -199,7 +202,7 @@
 
 		this.createAlbum = () => {
 			var setTitle = () => {
-				albumEditView.setTitle("Unnamed album");
+				albumEditView.setTitle("newAlbum");
 			};
 			makeCall("POST", "CreateAlbum", null,
 			(response) => {
