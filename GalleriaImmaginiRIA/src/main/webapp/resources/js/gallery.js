@@ -200,7 +200,7 @@
 		this.createAlbum = () => {
 			var setTitle = () => {
 				albumEditView.setTitle("Unnamed album");
-			}
+			};
 			makeCall("POST", "CreateAlbum", null,
 			(response) => {
 				this.orchestrator.refresh(null, null, response.albumId);
@@ -465,8 +465,7 @@
 			document.getElementById("editDiv").style.display = "block";
 		};
 
-		this.update = (imagesList, isPresentList) => { // how to iterate through this???
-			console.log(imagesList, isPresentList);
+		this.update = (imagesList, isPresentList) => {
 			if (imagesList.length == 0) {
 				const liNode = document.createElement("li");
 				this.albumEditList.appendChild(liNode);

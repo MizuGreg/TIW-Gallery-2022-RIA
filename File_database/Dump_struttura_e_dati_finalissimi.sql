@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.26, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.29, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: image_gallery_database
 -- ------------------------------------------------------
--- Server version	8.0.26
+-- Server version	8.0.28
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -31,7 +31,7 @@ CREATE TABLE `album` (
   PRIMARY KEY (`id`),
   KEY `creator_username_idx` (`creator_username`),
   CONSTRAINT `album_username` FOREIGN KEY (`creator_username`) REFERENCES `user` (`username`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -61,7 +61,7 @@ CREATE TABLE `comment` (
   KEY `image_comment_idx` (`image_id`),
   CONSTRAINT `image_comment` FOREIGN KEY (`image_id`) REFERENCES `image` (`ID`),
   CONSTRAINT `user_commente` FOREIGN KEY (`user`) REFERENCES `user` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +70,7 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
-INSERT INTO `comment` VALUES (1,2,'user1','che bel serval :)'),(6,3,'user1','ma quanto è carina no dimmi tu se non è bellissima\r\n'),(7,3,'user2','hai proprio ragione user1 è un animale fantastico'),(9,7,'user1','l\'upupa è l\'unico animale con la u che conoscevo alle elementari'),(10,6,'user1','gotta go fast'),(11,4,'user1','ferrets*\r\n'),(12,7,'animalHater87','i hate animals grrrrr'),(13,4,'animalHater87','i hate them too'),(14,4,'animalHater87','i really do'),(17,5,'user1','you don\'t want to see them walking on all fours'),(18,17,'user1','What a meanie >:('),(19,17,'OtterLover','Needs more otters'),(20,16,'user3','Meh'),(21,16,'user1','Molto carina :)'),(22,12,'user1','È forse l\'uccello più maestoso che abbia mai visto'),(23,12,'OtterLover','Non è una lontra però capisco perchè possa piacere!'),(24,4,'OtterLover','CHE BELLE! Sembrano quasi lontre!'),(25,9,'user3',')\"; --');
+INSERT INTO `comment` VALUES (1,2,'user1','che bel serval :)'),(6,3,'user1','ma quanto è carina no dimmi tu se non è bellissima\r\n'),(7,3,'user2','hai proprio ragione user1 è un animale fantastico'),(9,7,'user1','l\'upupa è l\'unico animale con la u che conoscevo alle elementari'),(10,6,'user1','gotta go fast'),(11,4,'user1','ferrets*\r\n'),(12,7,'animalHater87','i hate animals grrrrr'),(13,4,'animalHater87','i hate them too'),(14,4,'animalHater87','i really do'),(17,5,'user1','you don\'t want to see them walking on all fours'),(18,17,'user1','What a meanie >:('),(19,17,'OtterLover','Needs more otters'),(20,16,'user3','Meh'),(21,16,'user1','Molto carina :)'),(22,12,'user1','È forse l\'uccello più maestoso che abbia mai visto'),(23,12,'OtterLover','Non è una lontra però capisco perchè possa piacere!'),(24,4,'OtterLover','CHE BELLE! Sembrano quasi lontre!'),(25,9,'user3',')\";'),(26,9,'user1','a fantasy creature indeed O.O');
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -119,7 +119,7 @@ CREATE TABLE `image` (
   UNIQUE KEY `path_UNIQUE` (`path`),
   KEY `uploader_username_idx` (`uploader_username`),
   CONSTRAINT `image_user` FOREIGN KEY (`uploader_username`) REFERENCES `user` (`username`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -128,7 +128,7 @@ CREATE TABLE `image` (
 
 LOCK TABLES `image` WRITE;
 /*!40000 ALTER TABLE `image` DISABLE KEYS */;
-INSERT INTO `image` VALUES (2,'images/animals/Serval1.jpg','Serval walking','2022-06-16 18:54:45','A serval walking on dirt','user1'),(3,'images/animals/Fox1.jpg','Fox :)','2022-06-20 00:52:55','An orange and grey fox overlooking a grassy field','user1'),(4,'images/animals/Ferret1.jpg','<3','2022-06-20 10:28:25','Two ferret shaped like a heart','user1'),(5,'images/animals/Sunbear1.jpg','Praise the sun','2022-06-20 10:29:06','A sun bear sitting','user1'),(6,'images/animals/Hedgehog1.jpg','Spiky','2022-06-20 10:29:50','A close-up of a hedgehog','user1'),(7,'images/animals/Hoopoe1.jpg','Orange','2022-06-20 10:31:01','A hoopoe perching on a branch, with its head feathers spread out','user1'),(8,'images/animals/Badger1.webp','B&W','2022-06-27 19:11:17','A badger curiously looking in front of them','user1'),(9,'images/animals/Dog1.jpg','Lavender','2022-06-27 19:11:57','Golden retriever standing in a lavender field','user1'),(10,'images/animals/GreySquirrel1.jpg','Chubby','2022-06-27 19:14:42','A specimen of american grey squirrel, that\'s unfortunately endangering the native european red squirrel with its invasive presence in the european territory','user1'),(11,'images/animals/Hummingbird1.jpg','Stunning colors','2022-06-27 19:15:51','A hummingbird feeding off of the nectar of a flower','user1'),(12,'images/animals/Nightjar1.jpg','Dragon','2022-06-27 19:17:20','This nightjar is probably the closest we\'ll ever get to a real dragon','user1'),(13,'images/animals/Lynx1.jpg','Pointy','2022-06-27 19:20:06','I\'ve always liked the shape of their ears','user2'),(14,'images/animals/Moth1.jpg','Candy','2022-06-27 19:20:28','It looks like a piece of candy!','user2'),(15,'images/animals/Otter1.jpg','Wet','2022-06-27 19:30:15','Look at that fur!','OtterLover'),(16,'images/animals/Otter2.jpg','Not as wet','2022-06-27 19:30:57','I like these the most, look at that face','OtterLover'),(17,'images/buildings/Brutalism1.jpg','Brutalism','2022-06-27 20:16:02','Not a sliver of nature, just how i like it','animalHater87'),(18,'images/buildings/Brutalism2.webp','Concrete','2022-06-27 20:16:47','To whomever says that buildings are just boring rectangles','animalHater87');
+INSERT INTO `image` VALUES (1,'images/animals/PineMarten1.jpg','HE STOLE MY PIZZA','2022-06-29 20:17:23','Someone stop that scoundrel!','ciao'),(2,'images/animals/Serval1.jpg','Serval walking','2022-06-16 18:54:45','A serval walking on dirt','user1'),(3,'images/animals/Fox1.jpg','Fox :)','2022-06-20 00:52:55','An orange and grey fox overlooking a grassy field','user1'),(4,'images/animals/Ferret1.jpg','<3','2022-06-20 10:28:25','Two ferret shaped like a heart','user1'),(5,'images/animals/Sunbear1.jpg','Praise the sun','2022-06-20 10:29:06','A sun bear sitting','user1'),(6,'images/animals/Hedgehog1.jpg','Spiky','2022-06-20 10:29:50','A close-up of a hedgehog','user1'),(7,'images/animals/Hoopoe1.jpg','Orange','2022-06-20 10:31:01','A hoopoe perching on a branch, with its head feathers spread out','user1'),(8,'images/animals/Badger1.webp','B&W','2022-06-27 19:11:17','A badger curiously looking in front of them','user1'),(9,'images/animals/Dog1.jpg','Lavender','2022-06-27 19:11:57','Golden retriever standing in a lavender field','user1'),(10,'images/animals/GreySquirrel1.jpg','Chubby','2022-06-27 19:14:42','A specimen of american grey squirrel, that\'s unfortunately endangering the native european red squirrel with its invasive presence in the european territory','user1'),(11,'images/animals/Hummingbird1.jpg','Stunning colors','2022-06-27 19:15:51','A hummingbird feeding off of the nectar of a flower','user1'),(12,'images/animals/Nightjar1.jpg','Dragon','2022-06-27 19:17:20','This nightjar is probably the closest we\'ll ever get to a real dragon','user1'),(13,'images/animals/Lynx1.jpg','Pointy','2022-06-27 19:20:06','I\'ve always liked the shape of their ears','user2'),(14,'images/animals/Moth1.jpg','Candy','2022-06-27 19:20:28','It looks like a piece of candy!','user2'),(15,'images/animals/Otter1.jpg','Wet','2022-06-27 19:30:15','Look at that fur!','OtterLover'),(16,'images/animals/Otter2.jpg','Not as wet','2022-06-27 19:30:57','I like these the most, look at that face','OtterLover'),(17,'images/buildings/Brutalism1.jpg','Brutalism','2022-06-27 20:16:02','Not a sliver of nature, just how i like it','animalHater87'),(18,'images/buildings/Brutalism2.webp','Concrete','2022-06-27 20:16:47','To whomever says that buildings are just boring rectangles','animalHater87'),(19,'images/animals/PineMarten2.jpg','Pine marten','2022-06-29 20:17:23','A beautiful pine marten in the wild.','ciao'),(20,'images/animals/SnowLeopard1.jpg','Snow leopard','2022-06-29 20:17:23','A snow leopard looking into the photographer\'s camera.','ciao'),(21,'images/animals/SugarGlider1.jpg','Sugar glider','2022-06-29 20:17:23','What a nice little... weird... mouse.','ciao');
 /*!40000 ALTER TABLE `image` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -166,4 +166,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-29 12:43:45
+-- Dump completed on 2022-06-29 20:20:40
