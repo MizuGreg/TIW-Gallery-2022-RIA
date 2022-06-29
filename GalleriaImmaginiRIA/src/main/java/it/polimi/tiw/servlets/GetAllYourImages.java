@@ -48,7 +48,7 @@ public class GetAllYourImages extends HttpServlet {
 		Album album = null;
 		List<Image> imageList = null;
 		List<Image> selectedImageList = null;
-		LinkedHashMap<Image, Boolean> isContainedList = null;
+		LinkedHashMap<Image, Boolean> isContainedMap = null;
 		String username = (String)request.getSession().getAttribute("username");
         String errorMessage = null;
         
@@ -104,13 +104,13 @@ public class GetAllYourImages extends HttpServlet {
         
     	//Put the checkboxes
     	if(errorMessage == null) {
-    		isContainedList = new LinkedHashMap<>();
+    		isContainedMap = new LinkedHashMap<>();
     		for (Iterator<Image> iterator = imageList.iterator(); iterator.hasNext();) {
     			Image image = iterator.next();
     			if (selectedImageList.contains(image)) {
-    				isContainedList.put(image, true);
+    				isContainedMap.put(image, true);
     			}
-    			else isContainedList.put(image, false);
+    			else isContainedMap.put(image, false);
     		}
     	}
         
@@ -123,7 +123,7 @@ public class GetAllYourImages extends HttpServlet {
 			valuesToSend.put("errorMessage", errorMessage);
 		} else { // everything went smoothly
 			response.setStatus(HttpServletResponse.SC_OK);
-			valuesToSend.put("imagesList", isContainedList); 
+			valuesToSend.put("imagesMap", isContainedMap); 
 		}
 	   
 	    jsonResponse = gson.toJson(valuesToSend);   	
