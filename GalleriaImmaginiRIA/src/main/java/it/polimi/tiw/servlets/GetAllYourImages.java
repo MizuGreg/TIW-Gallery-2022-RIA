@@ -3,6 +3,7 @@ package it.polimi.tiw.servlets;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -48,7 +49,8 @@ public class GetAllYourImages extends HttpServlet {
 		Album album = null;
 		List<Image> imageList = null;
 		List<Image> selectedImageList = null;
-		LinkedHashMap<Image, Boolean> isContainedMap = null;
+		List<Boolean> isContainedList = null;
+		
 		String username = (String)request.getSession().getAttribute("username");
         String errorMessage = null;
         
@@ -104,18 +106,20 @@ public class GetAllYourImages extends HttpServlet {
         
     	//Put the checkboxes
     	if(errorMessage == null) {
-    		isContainedMap = new LinkedHashMap<>();
+    		// A map doesn't work because when we serialize it the keys will become
+    		// the references, not the objects themselves
+    		isContainedList = new ArrayList<>();
     		for (Iterator<Image> iterator = imageList.iterator(); iterator.hasNext();) {
     			Image image = iterator.next();
     			if (selectedImageList.contains(image)) {
-    				isContainedMap.put(image, true);
+    				isContainedList.add(true);
     			}
-    			else isContainedMap.put(image, false);
+    			else isContainedList.add(false);
     		}
     	}
         
 		Gson gson = new GsonBuilder().setDateFormat("yyyy/MM/dd").create();
-		HashMap<String, Object> valuesToSend = new HashMap<String, Object>();
+		HashMap<String, Object> valuesToSend = new LinkedHashMap<String, Object>();
 		String jsonResponse;
 		
 		//If an error was found, send it as a json message
@@ -123,7 +127,11 @@ public class GetAllYourImages extends HttpServlet {
 			valuesToSend.put("errorMessage", errorMessage);
 		} else { // everything went smoothly
 			response.setStatus(HttpServletResponse.SC_OK);
-			valuesToSend.put("imagesMap", isContainedMap); 
+			//This doesn't work so easily, json needs the map 
+			// to be processed first 
+			
+			valuesToSend.put("images", imageList);
+			valuesToSend.put("isPresentList", isContainedList);
 		}
 	   
 	    jsonResponse = gson.toJson(valuesToSend);   	
