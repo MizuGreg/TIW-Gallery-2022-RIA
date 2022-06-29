@@ -418,6 +418,7 @@
 				return commentTable;
 			}
 			comments.forEach(comment => {
+				this.commentsSection.appendChild(document.createElement("br"));
 				this.commentsSection.appendChild(createCommentTable(comment.user, comment.text));
 			});
 		};
