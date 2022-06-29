@@ -73,11 +73,11 @@
 		};
 	}
 	
-	function AlbumsList(userAlbums, othersAlbums, createAlbumButton, customOrderButton) {
-		this.userAlbums = userAlbums;
-		this.othersAlbums = othersAlbums;
-		this.createAlbumButton = createAlbumButton;
-		this.customOrderButton = customOrderButton;
+	function AlbumsList(_userAlbums, _othersAlbums, _createAlbumButton, _customOrderButton) {
+		this.userAlbums = _userAlbums;
+		this.othersAlbums = _othersAlbums;
+		this.createAlbumButton = _createAlbumButton;
+		this.customOrderButton = _customOrderButton;
 
 		this.registerEvents = (pageOrchestrator) => {
 			this.orchestrator = pageOrchestrator;
@@ -232,14 +232,14 @@
 		};
 	}
 	
-	function AlbumView(albumView, precButton, succButton, editButton) {
-		this.albumView = albumView;
+	function AlbumView(_albumView, _precButton, _succButton, _editButton) {
+		this.albumView = _albumView;
 		this.albumId = -1;
 		this.imagesList;
 		this.page = 0;
-		this.precButton = precButton;
-		this.succButton = succButton;
-		this.editButton = editButton;
+		this.precButton = _precButton;
+		this.succButton = _succButton;
+		this.editButton = _editButton;
 
 		this.registerEvents = (pageOrchestrator) => {
 			this.orchestrator = pageOrchestrator;
@@ -345,13 +345,13 @@
 		};
 	}
 	
-	function ImageView(modalWindow, imageView, commentsSection, yourComment, newCommentButton) {
-		this.modalWindow = modalWindow;
-		this.imageView = imageView;
+	function ImageView(_modalWindow, _imageView, _commentsSection, _yourComment, _newCommentButton) {
+		this.modalWindow = _modalWindow;
+		this.imageView = _imageView;
 		this.imageId = -1;
-		this.commentsSection = commentsSection;
-		this.yourComment = yourComment;
-		this.newCommentButton = newCommentButton;
+		this.commentsSection = _commentsSection;
+		this.yourComment = _yourComment;
+		this.newCommentButton = _newCommentButton;
 		
 		this.registerEvents = (pageOrchestrator) => {
 			this.orchestrator = pageOrchestrator;
@@ -436,10 +436,10 @@
 		};
 	}
 
-	function AlbumEditView(albumEditForm, albumEditTitle, albumEditList) {
-		this.albumEditForm = albumEditForm;
-		this.albumEditTitle = albumEditTitle;
-		this.albumEditList = albumEditList;
+	function AlbumEditView(_albumEditForm, _albumEditTitle, _albumEditList) {
+		this.albumEditForm = _albumEditForm;
+		this.albumEditTitle = _albumEditTitle;
+		this.albumEditList = _albumEditList;
 		this.albumId = -1;
 
 		this.registerEvents = (pageOrchestrator) => {
