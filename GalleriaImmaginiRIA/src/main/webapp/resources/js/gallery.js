@@ -455,6 +455,8 @@
 
 		this.reset = () => {
 			document.getElementById("editDiv").style.display = "none";
+			this.albumEditList.innerHTML = "";
+			this.albumEditTitle.value = "";
 			this.albumId = -1;
 		};
 
@@ -463,7 +465,7 @@
 			var self = this;
 			makeCall("GET", "GetYourImages?id=" + albumEditId, null,
 			(response) => {
-				this.update(response.imagesMap);
+				this.update(response.imagesList, response.isPresentList);
 			}, (response) => {
 				alert("There was an error while fetching the images from the server. " +
 				"Error: " + response.errorMessage);
@@ -471,25 +473,28 @@
 			document.getElementById("editDiv").style.display = "block";
 		};
 
-		this.update = (imagesMap) => { // how to iterate through this???
-			if (Object.entries(imagesMap).length == 0) {
+		this.update = (imagesList, isPresentList) => { // how to iterate through this???
+			console.log(imagesList, isPresentList);
+			if (imagesList.length == 0) {
 				const liNode = document.createElement("li");
 				this.albumEditList.appendChild(liNode);
 				liNode.appendChild(document.createTextNode("You have no images to add to this album."));
 			} else {
-				for (const [image, isPresent] of Object.entries(imagesMap)) {
-					console.log(image.id, image.path, isPresent);
+				for (var i = 0; i < imagesList.length; i++) {
+					const image = imagesList[i], isPresent = isPresentList[i];
 					const liNode = document.createElement("li");
 					this.albumEditList.appendChild(liNode);
 
 					const checkbox = document.createElement("input");
 					checkbox.type = "checkbox";
+					checkbox.name = "checkedImages";
 					checkbox.value = image.id;
 					checkbox.checked = isPresent;
 					liNode.appendChild(checkbox);
 
 					const imgNode = document.createElement("img");
 					imgNode.src = image.path;
+					imgNode.classList.add("thumbnail");
 					liNode.appendChild(imgNode);
 				}
 			}
