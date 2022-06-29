@@ -95,7 +95,6 @@
 		};
 
 		this.show = () => {
-			var self = this; // ugh
 			makeCall("GET", "GetAlbums", null,
 			(response) => {
 				this.updateUser(response.userAlbums);
@@ -199,7 +198,6 @@
 		};
 
 		this.createAlbum = () => {
-			var self = this;
 			var setTitle = () => {
 				albumEditView.setTitle("Unnamed album");
 			}
@@ -220,7 +218,6 @@
 			}
 			var formData = new FormData();
 			formData.append("albumIds", orderedIDs);
-			var self = this;
 			makeCall("POST", "UpdateOrdering", formData,
 			(response) => {
 				alert("New album order saved.");
@@ -263,7 +260,6 @@
 
 		this.show = (albumId) => {
 			this.albumId = albumId;
-			var self = this;
 			makeCall("GET", "Album?id=" + albumId, null,
 			(response) => {
 				this.update(response.albumTitle, response.imagesList);
@@ -326,12 +322,10 @@
 		this.makeModalShowable = (numberOfCells) => {
 			const imageCells = this.albumView.rows[0].cells;
 			for (var i = 0; i < numberOfCells; i++) {
-				if (imageCells[i].innerHTML != "") { // useless check now
-					const imageId = this.imagesList[this.page*5+i].id;
-					imageCells[i].childNodes[0].addEventListener("mouseover", () => {
-						this.orchestrator.refresh(-1, imageId, -1);
-					});
-				} else console.log("did the impossible!");
+				const imageId = this.imagesList[this.page*5+i].id;
+				imageCells[i].childNodes[0].addEventListener("mouseover", () => {
+					this.orchestrator.refresh(-1, imageId, -1);
+				});
 			}
 		};
 
@@ -380,7 +374,6 @@
 
 		this.show = (imageId) => {
 			this.imageId = imageId;
-			var self = this;
 			makeCall("GET", "Image?id=" + imageId, null,
 			(response) => {
 				this.updateImage(response.image);
@@ -430,7 +423,6 @@
 			formData.append("username", window.sessionStorage.getItem("username"));
 			formData.append("imageId", this.imageId);
 			formData.append("commentText", this.yourComment.value);
-			var self = this;
 			makeCall("POST", "CreateComment", formData,
 			(response) => {
 				this.orchestrator.refresh(-1, this.imageId, -1);
@@ -463,7 +455,6 @@
 
 		this.show = (albumEditId) => {
 			this.albumId = albumEditId;
-			var self = this;
 			makeCall("GET", "GetYourImages?id=" + albumEditId, null,
 			(response) => {
 				this.update(response.imagesList, response.isPresentList);
@@ -512,7 +503,6 @@
 			}
 			var formData = new FormData(this.albumEditForm);
 			formData.append("id", this.albumId);
-			var self = this;
 			makeCall("POST", "EditAlbum", formData,
 			(response) => {
 				this.orchestrator.refresh(this.albumId, null, null);

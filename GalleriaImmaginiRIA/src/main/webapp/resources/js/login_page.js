@@ -27,7 +27,7 @@
 					form.reportValidity();
 				}
 			});
-		}
+		};
 	}
 	
 	function SignupForm(formHtmlElement) {
