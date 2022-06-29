@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import it.polimi.tiw.dao.ImageDAO;
 import it.polimi.tiw.utility.CheckerUtility;
 import it.polimi.tiw.utility.ConnectionUtility;
 
+@MultipartConfig
 //@WebServlet("/UpdateOrdering")
 public class UpdateOrdering extends HttpServlet {
 
@@ -48,7 +50,8 @@ public class UpdateOrdering extends HttpServlet {
     	AlbumDAO albumDAO = new AlbumDAO(connection);
     	List<Album> userAlbumList = null;
     	List<Integer> userAlbumIdsList = null;
-        String[] readIds = request.getParameterValues("albumIds");
+        String readIds = request.getParameter("albumIds");
+        String[] readIdsSplit = null;
         List<String> listOfReadIds = null;
         List<Integer> integerIds = null;
         String username = (String) request.getSession().getAttribute("username");
@@ -61,9 +64,12 @@ public class UpdateOrdering extends HttpServlet {
     		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     	}
     	
+    	
+    	
     	if(errorMessage == null) {
+    		readIdsSplit = readIds.split(",");
     		integerIds = new ArrayList<Integer>();
-    		listOfReadIds = Arrays.asList(readIds);
+    		listOfReadIds = Arrays.asList(readIdsSplit);
     		
     		int realId;
 

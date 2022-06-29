@@ -228,7 +228,7 @@
 		this.pushNewOrder = () => {
 			var orderedIDs = [];
 			for (var i = 0, row; row = this.userAlbums.rows[i]; i++) {
-				orderedIDs.push(row.cells[1].value);
+				orderedIDs.push(row.cells[1].textContent);
 			}
 			console.log(orderedIDs);
 			var formData = new FormData();

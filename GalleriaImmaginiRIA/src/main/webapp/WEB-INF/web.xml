@@ -93,6 +93,15 @@ version="4.0">
 		<servlet-name>CreateComment</servlet-name>
 		<url-pattern>/CreateComment</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>UpdateOrdering</servlet-name>
+		<servlet-class>it.polimi.tiw.servlets.UpdateOrdering</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UpdateOrdering</servlet-name>
+		<url-pattern>/UpdateOrdering</url-pattern>
+	</servlet-mapping>
 
 	<!-- Servlets to switch between pages -->
 
@@ -197,6 +206,7 @@ version="4.0">
 		<url-pattern>/Album</url-pattern>
 		<url-pattern>/Image</url-pattern>
 		<url-pattern>/GetYourImages</url-pattern>
+		<url-pattern>/UpdateOrdering</url-pattern>
 	</filter-mapping>
 		
 </web-app>
