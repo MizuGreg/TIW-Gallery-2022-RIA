@@ -1,14 +1,9 @@
 (function() {
-
-	console.log("hello");
-	loginFormPath = "LoginCheck";
-	signupFormPath = "SignupCheck";
 	
 	var loginForm = new LoginForm(document.getElementById("loginForm"));
 	var signupForm = new SignupForm(document.getElementById("signupForm"));
 	
 	window.addEventListener("load", () => {
-		console.log("add event listener load");
 		loginForm.registerClick();
 		signupForm.registerClick();
 	})
@@ -18,22 +13,15 @@
 		
 		this.registerClick = function() {
 			this.elements["loginButton"].addEventListener("click", (e) => {
-				console.log("clicked on login button");
 				var form = e.target.closest("form"); // looks for the form near where the event is
 
 				if (form.checkValidity()) {
-					makeCallForm("POST", loginFormPath, form, 
-					function(request) {
-						if (request.readyState == XMLHttpRequest.DONE) {
-							const responseJson = JSON.parse(request.responseText);
-							console.log(responseJson);
-							if (request.status == 200) {
-								sessionStorage.setItem("username", responseJson.usernameJson);
-								window.location.href = "Galleria";
-							} else {
-								alert(responseJson.errorMessage);
-							}
-						}
+					var formData = new FormData(form);
+					makeCall("POST", "LoginCheck", formData, (response) => {
+						sessionStorage.setItem("username", response.username);
+						window.location.href = "Galleria";
+					}, (response) => {
+						alert(response.errorMessage);
 					});
 				} else {
 					form.reportValidity();
@@ -51,19 +39,13 @@
 				
 				if (form.checkValidity()) {
 					if (this.elements["signupPassword"].value == this.elements["repeatPassword"].value) {
-						makeCallForm("POST", signupFormPath, form, 
-						function(request) {
-							if (request.readyState == XMLHttpRequest.DONE) {
-								const responseJson = JSON.parse(request.responseText);
-								console.log(responseJson);
-								if (request.status == 200) {
-									sessionStorage.setItem("username", responseJson.usernameJson);
-									window.location.href = "Galleria";
-								} else {
-									alert(responseJson.errorMessage);
-								}
-							}
-						})
+						var formData = new FormData(form);
+						makeCall("POST", "SignupCheck", form, (response) => {
+							sessionStorage.setItem("username", response.username);
+							window.location.href = "Galleria";
+						}, (response) => {
+							alert(response.errorMessage);
+						});
 					} else {
 						alert("The passwords don't match, please check your input.")
 					}
