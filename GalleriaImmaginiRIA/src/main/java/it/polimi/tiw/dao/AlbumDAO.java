@@ -366,7 +366,7 @@ public class AlbumDAO {
 	public int resetOrdering(String username) throws SQLException{
 		String query =  "UPDATE album "
 				+ 		"SET ordering = 0 "
-				+ 		"WHERE username = ?";
+				+ 		"WHERE creator_username = ?";
 		int code = 0;
 		PreparedStatement preparedStatement = null;
 		try {
