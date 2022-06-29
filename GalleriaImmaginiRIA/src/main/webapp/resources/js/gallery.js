@@ -232,6 +232,7 @@
 			console.log(orderedIDs);
 			var formData = new FormData();
 			formData.append("albumIds", orderedIDs);
+			var self = this;
 			makeCall("POST", "UpdateOrdering", formData, function(request) {
 				if (request.readyState == XMLHttpRequest.DONE) {
 					const responseJson = JSON.parse(request.responseText);
@@ -240,6 +241,7 @@
 					} else {
 						alert("There was an error while saving the custom album order. " +
 						"Error: " + responseJson.errorMessage);
+						self.orchestrator.update(-1, -1, -1);
 					}
 				}
 			});
@@ -283,7 +285,7 @@
 					const responseJson = JSON.parse(request.responseText);
 					if (request.status == 200) {
 						// fill the view with json content
-						self.update(responseJson.title, responseJson.imagesList);
+						self.update(responseJson.albumTitle, responseJson.imagesList);
 					} else {
 						alert("There was an error while fetching this album from the server. " +
 						"Please try again later. Error: " + responseJson.errorMessage);
@@ -294,9 +296,17 @@
 		};
 
 		this.update = (title, imagesListInput) => {
-			// document.getElementById("albumNameHeader").value = title;
-			if (imagesListInput != null)
+			document.getElementById("albumNameHeader").value = title;
+			if (imagesListInput != null) {
 				this.imagesList = imagesListInput;
+				if (imagesListInput.length == 0) { // album is empty
+					const row = this.albumView.insertRow();
+					row.insertCell().appendChild(document.createTextNode("This album is empty."));
+					this.precButton.style.display = "none";
+					this.succButton.style.display = "none";
+					return;
+				}
+			}
 			const imagesToDisplay = this.imagesList.slice(this.page*5, this.page*5+5);
 			const imageRow = this.albumView.insertRow();
 			const titleRow = this.albumView.insertRow();
@@ -357,7 +367,7 @@
 		this.editAlbum = () => {
 			var editAlbumId = this.albumId;
 			this.orchestrator.refresh(null, null, editAlbumId);
-			const title = document.getElementById("albumNameHeader").value;
+			const title = document.getElementById("albumNameHeader").textContent;
 			albumEditView.setTitle(title);
 		};
 	}
@@ -499,19 +509,25 @@
 		};
 
 		this.update = (imagesMap) => { // how to iterate through this???
-			for (const [image, isPresent] of imagesMap) {
+			if (Object.entries(imagesMap).length == 0) {
 				const liNode = document.createElement("li");
 				this.albumEditList.appendChild(liNode);
+				liNode.appendChild(document.createTextNode("You have no images to add to this album."));
+			} else {
+				for (const [image, isPresent] of Object.entries(imagesMap)) {
+					const liNode = document.createElement("li");
+					this.albumEditList.appendChild(liNode);
 
-				const checkbox = document.createElement("input");
-				checkbox.type = "checkbox";
-				checkbox.value = image.id;
-				checkbox.checked = isPresent;
-				liNode.appendChild(checkbox);
+					const checkbox = document.createElement("input");
+					checkbox.type = "checkbox";
+					checkbox.value = image.id;
+					checkbox.checked = isPresent;
+					liNode.appendChild(checkbox);
 
-				const imgNode = document.createElement("img");
-				imgNode.src = image.path;
-				liNode.appendChild(imgNode);
+					const imgNode = document.createElement("img");
+					imgNode.src = image.path;
+					liNode.appendChild(imgNode);
+				}
 			}
 		};
 
