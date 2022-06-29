@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.catalina.valves.ErrorReportValve;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -101,14 +103,15 @@ public class SignupCheck extends HttpServlet {
 			}
 		}
 		
-		// Create the user and add it to the database
-		try {
-			userDAO.createUser(username, email, password);
-		} catch (SQLException e) {
-			errorMessage = "Failure in database user creation";
-			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+		if(errorMessage == null) {
+			// Create the user and add it to the database
+			try {
+				userDAO.createUser(username, email, password);
+			} catch (SQLException e) {
+				errorMessage = "Failure in database user creation";
+				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			}
 		}
-		
 		Gson gson = new GsonBuilder().setDateFormat("yyyy/MM/dd").create();
         HashMap<String, Object> valuesToSend = new HashMap<String, Object>();
         String jsonResponse;
