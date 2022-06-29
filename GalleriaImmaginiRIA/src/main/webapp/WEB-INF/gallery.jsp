@@ -36,6 +36,7 @@
 				<button>Save this album order</button>
 			</a>
 		</div>
+		<br>
 		<div id="createAlbumButton">
 			<a href="#createAlbum">
 				<button>Create a new album</button>
