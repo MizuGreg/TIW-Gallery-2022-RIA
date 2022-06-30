@@ -6,8 +6,7 @@
 <title>PF15 - Log in/sign up</title>
 <link rel="stylesheet" type="text/css" media="all" href="css/login_page.css" />
 <script type="text/javascript" src="js/utils.js" charset="utf-8" defer></script>
-<script type="text/javascript" src="js/login_page.js" charset="utf-8" defer></script> <!-- remember: defer means the script is fetched
-in parallel to parsing but evaluated after parsing has finished -->
+<script type="text/javascript" src="js/login_page.js" charset="utf-8" defer></script>
 
 </head>
 
