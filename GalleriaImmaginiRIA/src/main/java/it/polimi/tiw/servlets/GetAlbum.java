@@ -38,7 +38,7 @@ public class GetAlbum extends HttpServlet{
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	String readAlbumId = null;
+    	String readAlbumId = request.getParameter("id");
 		int albumId = 0;
 		boolean getFirstUserAlbum = false;
 		AlbumDAO albumDAO = new AlbumDAO(connection);
@@ -49,7 +49,6 @@ public class GetAlbum extends HttpServlet{
 		
         String errorMessage = null;
        
-        readAlbumId = request.getParameter("id");
         //Get the id from the url
     	//if there is no parameter, default to getting the newest one for the currently logged in user
     	if (!CheckerUtility.checkAvailability(readAlbumId)) {

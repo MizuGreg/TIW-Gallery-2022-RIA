@@ -64,7 +64,7 @@ public class GetImageInfo extends HttpServlet{
     	}
     	
     	if(errorMessage == null) {
-    		//Get the image
+    		//Get the image...
     		try {
 				image = imageDAO.getImageFromId(imageId);
 			} catch (SQLException e) {
