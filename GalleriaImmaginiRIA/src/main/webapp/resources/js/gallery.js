@@ -20,8 +20,8 @@
 
 			albumView = new AlbumView(
 				document.getElementById("albumView"),
-				document.getElementById("precButton"),
-				document.getElementById("succButton"),
+				document.getElementById("prevButton"),
+				document.getElementById("nextButton"),
 				document.getElementById("editAlbumButton")
 			);
 			albumView.registerEvents(this);
@@ -124,11 +124,12 @@
 					row.draggable = true;
 					const titleCell = row.insertCell();
 					titleCell.appendChild(document.createTextNode(element.title));
-					
+					titleCell.classList.add("clickableTitle");
 					titleCell.addEventListener("click", () => {
 						this.orchestrator.refresh(element.id, null, null);
 						albumView.showEditButton(false);
 					});
+
 					const idCell = row.insertCell();
 					idCell.appendChild(document.createTextNode(element.id));
 					const dateCell = row.insertCell();
@@ -169,12 +170,15 @@
 					const row = this.othersAlbums.insertRow();
 					const creatorCell = row.insertCell();
 					creatorCell.appendChild(document.createTextNode(element.creator_username));
+
 					const titleCell = row.insertCell();
 					titleCell.appendChild(document.createTextNode(element.title));
+					titleCell.classList.add("clickableTitle");
 					titleCell.addEventListener("click", () => {
 						this.orchestrator.refresh(element.id, null, null);
 						albumView.showEditButton(true);
 					});
+					
 					const idCell = row.insertCell();
 					idCell.appendChild(document.createTextNode(element.id));
 					const dateCell = row.insertCell();
@@ -232,21 +236,21 @@
 		};
 	}
 	
-	function AlbumView(_albumView, _precButton, _succButton, _editButton) {
+	function AlbumView(_albumView, _prevButton, _nextButton, _editButton) {
 		this.albumView = _albumView;
 		this.albumId = -1;
 		this.imagesList;
 		this.page = 0;
-		this.precButton = _precButton;
-		this.succButton = _succButton;
+		this.prevButton = _prevButton;
+		this.nextButton = _nextButton;
 		this.editButton = _editButton;
 
 		this.registerEvents = (pageOrchestrator) => {
 			this.orchestrator = pageOrchestrator;
-			this.precButton.addEventListener("click", () => {
+			this.prevButton.addEventListener("click", () => {
 				this.previousPage();
 			});
-			this.succButton.addEventListener("click", () => {
+			this.nextButton.addEventListener("click", () => {
 				this.nextPage();
 			})
 			this.editButton.addEventListener("click", () => {
@@ -280,8 +284,8 @@
 				if (imagesList.length == 0) { // album is empty
 					const row = this.albumView.insertRow();
 					row.insertCell().appendChild(document.createTextNode("This album is empty."));
-					this.precButton.style.display = "none";
-					this.succButton.style.display = "none";
+					this.prevButton.style.display = "none";
+					this.nextButton.style.display = "none";
 					return;
 				}
 			}
@@ -298,14 +302,14 @@
 			}
 
 			if (imagesToDisplay.length < 5 || this.imagesList.length/5 == this.page+1) {
-				this.succButton.style.display = "none";
+				this.nextButton.style.display = "none";
 			} else {
-				this.succButton.style.display = "block";
+				this.nextButton.style.display = "block";
 			}
 			if (this.page == 0) {
-				this.precButton.style.display = "none";
+				this.prevButton.style.display = "none";
 			} else {
-				this.precButton.style.display = "block";
+				this.prevButton.style.display = "block";
 			}
 			this.makeModalShowable(imagesToDisplay.length);
 		}

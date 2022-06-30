@@ -66,18 +66,18 @@
 		<br><hr><br>
 		<h2 id ="albumNameHeader">Album view</h2>
 		<div id="albumPlusButtons">
-			<div id="precButton">
-				<a href="#prec"> <!-- hashes are actually useless tho -->
-					<button>Precedente</button>
+			<div id="prevButton">
+				<a href="#prevPage"> <!-- hashes are actually useless tho -->
+					<button>Previous</button>
 				</a>
 			</div>
 			<table>
 				<tbody id="albumView">
 				</tbody>
 			</table>
-			<div id="succButton">
-				<a href="#succ"> <!-- hashes are actually useless tho -->
-					<button>Successivo</button>
+			<div id="nextButton">
+				<a href="#nextPage">
+					<button>Next</button>
 				</a>
 			</div>
 		</div>

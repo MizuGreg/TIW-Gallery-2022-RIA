@@ -34,6 +34,14 @@ button:focus {
   background-color: #004084;
 }
 
+#prevButton {
+	margin-right: 2px;
+}
+
+#nextButton {
+	margin-left: 2px;
+}
+
 pre, textarea {
 	font-family: Helvetica, sans-serif;
 	font-size: 14px;
@@ -59,6 +67,11 @@ table thead {
 	padding: 10px;
 	background-color: #295c84;
 	color: white;
+}
+
+.clickableTitle:hover, .clickableTitle:focus {
+	color: #295c84;
+	cursor: pointer;
 }
 
 #logoutButton {
