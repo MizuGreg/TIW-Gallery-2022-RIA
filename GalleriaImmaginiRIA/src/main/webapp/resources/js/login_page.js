@@ -11,9 +11,9 @@
 	function LoginForm(formHtmlElement) {
 		this.elements = formHtmlElement.elements;
 		
-		this.registerClick = function() {
-			this.elements["loginButton"].addEventListener("click", (e) => {
-				var form = e.target.closest("form"); // looks for the form near where the event is
+		this.registerClick = () => {
+			this.elements["loginButton"].addEventListener("click", (event) => {
+				var form = event.target.closest("form"); // looks for the form near where the event is
 
 				if (form.checkValidity()) {
 					var formData = new FormData(form);
@@ -33,9 +33,9 @@
 	function SignupForm(formHtmlElement) {
 		this.elements = formHtmlElement.elements;
 		
-		this.registerClick = function() {
-			this.elements["signupButton"].addEventListener("click", (e) => {
-				var form = e.target.closest("form"); // looks for the form near where the event is
+		this.registerClick = () => {
+			this.elements["signupButton"].addEventListener("click", (event) => {
+				var form = event.target.closest("form"); // looks for the form near where the event is
 				
 				if (form.checkValidity()) {
 					if (this.elements["signupPassword"].value == this.elements["repeatPassword"].value) {

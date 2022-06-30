@@ -127,7 +127,7 @@
 					titleCell.classList.add("clickableTitle");
 					titleCell.addEventListener("click", () => {
 						this.orchestrator.refresh(element.id, null, null);
-						albumView.showEditButton(false);
+						albumView.showEditButton(true);
 					});
 
 					const idCell = row.insertCell();
@@ -156,7 +156,7 @@
 						t.parentNode.before(draggingRow);
 				});
 			}
-		}
+		};
 
 		this.updateOthers = (albumsArray) => {
 			this.othersAlbums.innerHTML = "";
@@ -164,7 +164,7 @@
 				const row = this.othersAlbums.insertRow();
 				const cell = row.insertCell();
 				cell.setAttribute("colspan", "4");
-				cell.appendChild(document.createTextNode("There are no albums here! "));
+				cell.appendChild(document.createTextNode("There are no albums here!"));
 			} else {
 				albumsArray.forEach(element => {
 					const row = this.othersAlbums.insertRow();
@@ -176,32 +176,15 @@
 					titleCell.classList.add("clickableTitle");
 					titleCell.addEventListener("click", () => {
 						this.orchestrator.refresh(element.id, null, null);
-						albumView.showEditButton(true);
+						albumView.showEditButton(false);
 					});
-					
+
 					const idCell = row.insertCell();
 					idCell.appendChild(document.createTextNode(element.id));
 					const dateCell = row.insertCell();
 					dateCell.appendChild(document.createTextNode(element.date));
 				});
 			};
-		};
-
-		this.autoclick = (id) => {
-			var e = new Event("click");
-			for (var i = 0, row; row = this.userAlbums.rows[i]; i++) {
-				if (row.cells[1].innerHTML == id) {
-					row.cells[0].dispatchEvent(e);
-					return;
-				}
-			}
-			for (var i = 0, row; row = this.othersAlbums.rows[i]; i++) {
-				if (row.cells[2].innerHTML == id) {
-					row.cells[1].dispatchEvent(e);
-					return;
-				}
-			}
-			alert("autoclick failed!"); // this should never happen
 		};
 
 		this.createAlbum = () => {
@@ -289,7 +272,7 @@
 					return;
 				}
 			}
-			const imagesToDisplay = this.imagesList.slice(this.page*5, this.page*5+5);
+			const imagesToDisplay = this.imagesList.slice(this.page*5, (this.page+1)*5);
 			const imageRow = this.albumView.insertRow();
 			const titleRow = this.albumView.insertRow();
 			for (var i = 0; i < imagesToDisplay.length; i++) {
@@ -337,8 +320,8 @@
 		};
 
 		this.showEditButton = (showBool) => {
-			if (showBool) this.editButton.style.visibility = "hidden";
-			else this.editButton.style.visibility = "visible";
+			if (showBool) this.editButton.style.visibility = "visible";
+			else this.editButton.style.visibility = "hidden";
 		}
 
 		this.editAlbum = () => {
@@ -416,7 +399,7 @@
 				commentTable.createTBody().insertRow().insertCell().appendChild(commentText);
 				commentTable.createTHead().insertRow().insertCell().appendChild(document.createTextNode(user + " said:"));
 				return commentTable;
-			}
+			};
 			comments.forEach(comment => {
 				this.commentsSection.appendChild(document.createElement("br"));
 				this.commentsSection.appendChild(createCommentTable(comment.user, comment.text));
@@ -424,8 +407,10 @@
 		};
 
 		this.addComment = () => {
-			if (this.yourComment.value == "") return;
-
+			if (this.yourComment.value == "") {
+				alert("The comment can't be empty");
+				return;
+			}
 			var formData = new FormData();
 			formData.append("username", window.sessionStorage.getItem("username"));
 			formData.append("imageId", this.imageId);
@@ -477,24 +462,24 @@
 				const liNode = document.createElement("li");
 				this.albumEditList.appendChild(liNode);
 				liNode.appendChild(document.createTextNode("You have no images to add to this album."));
-			} else {
-				for (var i = 0; i < imagesList.length; i++) {
-					const image = imagesList[i], isPresent = isPresentList[i];
-					const liNode = document.createElement("li");
-					this.albumEditList.appendChild(liNode);
+				return;
+			}
+			for (var i = 0; i < imagesList.length; i++) {
+				const image = imagesList[i], isPresent = isPresentList[i];
+				const liNode = document.createElement("li");
+				this.albumEditList.appendChild(liNode);
 
-					const checkbox = document.createElement("input");
-					checkbox.type = "checkbox";
-					checkbox.name = "checkedImages";
-					checkbox.value = image.id;
-					checkbox.checked = isPresent;
-					liNode.appendChild(checkbox);
+				const checkbox = document.createElement("input");
+				checkbox.type = "checkbox";
+				checkbox.name = "checkedImages";
+				checkbox.value = image.id;
+				checkbox.checked = isPresent;
+				liNode.appendChild(checkbox);
 
-					const imgNode = document.createElement("img");
-					imgNode.src = image.path;
-					imgNode.classList.add("thumbnail");
-					liNode.appendChild(imgNode);
-				}
+				const imgNode = document.createElement("img");
+				imgNode.src = image.path;
+				imgNode.classList.add("thumbnail");
+				liNode.appendChild(imgNode);
 			}
 		};
 
