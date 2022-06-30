@@ -342,9 +342,10 @@
 		
 		this.registerEvents = (pageOrchestrator) => {
 			this.orchestrator = pageOrchestrator;
-			document.getElementById("modalWindow").addEventListener("click", (event) => {
-				this.reset();
-			})
+			window.addEventListener("click", (event) => {
+				if (event.target == document.getElementById("modalWindow"))
+					this.reset();
+			});
 			document.getElementById("closeButton").addEventListener("click", () => {
 				this.reset();
 			});
@@ -407,7 +408,7 @@
 
 		this.addComment = () => {
 			if (this.yourComment.value == "") {
-				alert("The comment can't be empty");
+				alert("The comment can't be empty!");
 				return;
 			}
 			var formData = new FormData();
