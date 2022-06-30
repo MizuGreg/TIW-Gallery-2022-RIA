@@ -408,7 +408,7 @@
 
 		this.addComment = () => {
 			if (this.yourComment.value == "") {
-				alert("The comment can't be empty");
+				alert("The comment can't be empty!");
 				return;
 			}
 			var formData = new FormData();

@@ -10,7 +10,7 @@
 </head>
 <body>
 	<div id="logoutButton">
-		<a href="Logout"> <!-- hashes are actually useless tho -->
+		<a href="Logout">
 			<button>Logout</button>
 		</a>
 	</div>
@@ -67,7 +67,7 @@
 		<h2 id ="albumNameHeader">Album view</h2>
 		<div id="albumPlusButtons">
 			<div id="prevButton">
-				<a href="#prevPage"> <!-- hashes are actually useless tho -->
+				<a href="#prevPage">
 					<button>Previous</button>
 				</a>
 			</div>
