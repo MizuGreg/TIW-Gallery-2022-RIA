@@ -21,7 +21,7 @@ public class GoToLoginPage extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	String htmlPath = "/WEB-INF/login_page.jsp"; // using HTML extension causes a loop for some damn reason!
+    	String htmlPath = "/login_page.jsp"; // using HTML extension causes a loop for some damn reason!
 		
 		//Checking whether the user is already logged in, in that case send them to the home page
 		HttpSession session = request.getSession(false);

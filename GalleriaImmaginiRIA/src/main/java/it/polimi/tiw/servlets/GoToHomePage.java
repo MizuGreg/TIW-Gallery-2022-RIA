@@ -32,7 +32,7 @@ public class GoToHomePage extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
-    	String htmlPath = "/WEB-INF/gallery.jsp";
+    	String htmlPath = "/gallery.jsp";
     	
     	//Query string components: none
     	//Thanks to the filter, this page can't be accessed by someone not logged in
