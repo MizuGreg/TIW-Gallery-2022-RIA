@@ -140,6 +140,10 @@ table thead {
   	border-radius: 5px;
 }
 
+.thumbnailCell, .fullImageCell {
+	text-align: center;
+}
+
 #imageView table {
 	width: 100%;
 	border: none;

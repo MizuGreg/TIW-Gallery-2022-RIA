@@ -279,9 +279,14 @@
 				const img = document.createElement("img");
 				img.src = imagesToDisplay[i].path;
 				img.classList.add("thumbnail");
-				imageRow.insertCell().appendChild(img);
+				const imageCell = imageRow.insertCell();
+				imageCell.classList.add("thumbnailCell");
+				imageCell.appendChild(img);
 				const title = document.createTextNode(imagesToDisplay[i].title);
-				titleRow.insertCell().appendChild(title);
+
+				const titleCell = titleRow.insertCell();
+				titleCell.classList.add("thumbnailCell");
+				titleCell.appendChild(title);
 			}
 
 			if (imagesToDisplay.length < 5 || this.imagesList.length/5 == this.page+1) {
@@ -343,7 +348,7 @@
 		this.registerEvents = (pageOrchestrator) => {
 			this.orchestrator = pageOrchestrator;
 			window.addEventListener("click", (event) => {
-				if (event.target == document.getElementById("modalWindow"))
+				if (event.target == this.modalWindow)
 					this.reset();
 			});
 			document.getElementById("closeButton").addEventListener("click", () => {
@@ -383,7 +388,9 @@
 			const img = document.createElement("img");
 			img.src = image.path;
 			img.classList.add("fullImage");
-			imageRow.insertCell().appendChild(img);
+			const imageCell = imageRow.insertCell();
+			imageCell.classList.add("fullImageCell");
+			imageCell.appendChild(img);
 			
 			imageTable.insertRow().insertCell().appendChild(document.createTextNode("Title: " + image.title));
 			imageTable.insertRow().insertCell().appendChild(document.createTextNode("Date: " + image.date));
