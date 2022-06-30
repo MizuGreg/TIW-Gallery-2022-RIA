@@ -18,7 +18,7 @@ in parallel to parsing but evaluated after parsing has finished -->
 
 	<fieldset>
   		<legend>Login:</legend>
-			<form id="loginForm" action="#" method="POST"> <!-- # means JS will catch this form (and then forward it to the right servlet) -->
+			<form id="loginForm" action="#" method="POST">
 				<table>
 					<tr>
 						<td>Username:</td>

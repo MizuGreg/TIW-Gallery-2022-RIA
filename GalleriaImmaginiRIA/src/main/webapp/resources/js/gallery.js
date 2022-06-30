@@ -342,10 +342,9 @@
 		
 		this.registerEvents = (pageOrchestrator) => {
 			this.orchestrator = pageOrchestrator;
-			window.addEventListener("click", (event) => {
-				if (event.target == document.getElementById("modalWindow"))
-					this.reset();
-			});
+			document.getElementById("modalWindow").addEventListener("click", (event) => {
+				this.reset();
+			})
 			document.getElementById("closeButton").addEventListener("click", () => {
 				this.reset();
 			});
